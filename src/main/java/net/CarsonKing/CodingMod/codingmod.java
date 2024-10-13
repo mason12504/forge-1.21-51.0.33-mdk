@@ -16,22 +16,22 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(CodingMod.MOD_ID)
-public class CodingMod
+@Mod(codingmod.MOD_ID)
+public class codingmod
 {
     // Define mod id in a common place for everything to reference
-    public static final String MOD_ID = "CodingMod";
+    public static final String MOD_ID = "codingmod";
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
 
 
 
-    public CodingMod()
+    public codingmod()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register the commonSetup method for modloading
+        // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
         // Register ourselves for server and other game events we are interested in
