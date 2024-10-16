@@ -1,6 +1,7 @@
 package net.CarsonKing.codingmod;
 
 import com.mojang.logging.LogUtils;
+import net.CarsonKing.codingmod.ModItems.ModCreativeModeTabs;
 import net.CarsonKing.codingmod.ModItems.ModItems;
 import net.CarsonKing.codingmod.block.ModBlocks;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -40,7 +41,8 @@ public class codingmod
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        //Registers for block and items
+        //Registers for block items, creative mod tab
+        ModCreativeModeTabs.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
 
