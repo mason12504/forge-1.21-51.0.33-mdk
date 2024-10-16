@@ -32,6 +32,7 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creativetab.codingmod.test_blocks"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.TEST_BLOCK.get());
+                        output.accept(ModBlocks.TERMINAL.get());
                     }
                     ).build());
 

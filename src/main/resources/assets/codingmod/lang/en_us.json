@@ -2,6 +2,8 @@
   "item.codingmod.testitem": "Test Item",
 
   "block.codingmod.test_block": "Test Item Block",
+  "block.codingmod.terminal": "Terminal",
+
 
   "creativetab.codingmod.testitem_items": "Test Items",
   "creativetab.codingmod.test_blocks": "Test Blocks"

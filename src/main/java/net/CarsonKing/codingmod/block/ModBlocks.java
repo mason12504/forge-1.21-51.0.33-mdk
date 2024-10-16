@@ -1,6 +1,7 @@
 package net.CarsonKing.codingmod.block;
 
 import net.CarsonKing.codingmod.ModItems.ModItems;
+import net.CarsonKing.codingmod.block.custom.Terminal;
 import net.CarsonKing.codingmod.codingmod;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -21,6 +22,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> TEST_BLOCK = registerBlock("test_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.AMETHYST)));
+    public static final RegistryObject<Block> TERMINAL = registerBlock("terminal",
+            () -> new Terminal(BlockBehaviour.Properties.of().strength(2f).requiresCorrectToolForDrops()));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
