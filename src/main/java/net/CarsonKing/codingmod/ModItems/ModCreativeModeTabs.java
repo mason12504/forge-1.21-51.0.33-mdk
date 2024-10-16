@@ -22,6 +22,8 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("creativetab.codingmod.testitem_items"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.TESTITEM.get());
+                        // this adds my item to the test items creative mode tab
+                        output.accept(ModItems.TESTITEMMASON.get());
                     }
                     ).build());
 

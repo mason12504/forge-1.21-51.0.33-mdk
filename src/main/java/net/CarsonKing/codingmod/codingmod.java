@@ -62,6 +62,7 @@ public class codingmod
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.TESTITEM);
+            event.accept(ModItems.TESTITEMMASON); // add mason's item to creative mode ingredients tab
         }
 
         if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
