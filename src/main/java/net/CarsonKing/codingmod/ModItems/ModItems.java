@@ -1,6 +1,6 @@
-package net.CarsonKing.CodingMod.ModItems;
+package net.CarsonKing.codingmod.ModItems;
 
-import net.CarsonKing.CodingMod.codingmod;
+import net.CarsonKing.codingmod.codingmod;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

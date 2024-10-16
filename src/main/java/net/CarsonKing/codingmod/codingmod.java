@@ -1,7 +1,8 @@
-package net.CarsonKing.CodingMod;
+package net.CarsonKing.codingmod;
 
 import com.mojang.logging.LogUtils;
-import net.CarsonKing.CodingMod.ModItems.ModItems;
+import net.CarsonKing.codingmod.ModItems.ModItems;
+import net.CarsonKing.codingmod.block.ModBlocks;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(codingmod.MOD_ID)
+@Mod(net.CarsonKing.codingmod.codingmod.MOD_ID)
 public class codingmod
 {
     // Define mod id in a common place for everything to reference
@@ -40,7 +41,7 @@ public class codingmod
         MinecraftForge.EVENT_BUS.register(this);
 
         //Registers for block and items
-        //MobBlocks.register(modEventBus);
+        ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);
 
         // Register the item to a creative tab
@@ -59,6 +60,10 @@ public class codingmod
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.TESTITEM);
+        }
+
+        if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            event.accept(ModBlocks.TEST_BLOCK);
         }
     }
 

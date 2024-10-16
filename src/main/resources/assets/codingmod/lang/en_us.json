@@ -1,3 +1,5 @@
 {
-  "item.codingmod.testitem": "Test Item"
+  "item.codingmod.testitem": "Test Item",
+
+  "block.codingmod.test_block": "Test Item Block"
 }
