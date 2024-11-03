@@ -5,6 +5,9 @@
   "block.codingmod.test_block": "Test Item Block",
   "block.codingmod.terminal": "Terminal",
 
+  "screen.codingmod.terminal": "Terminal",
+  "button.codingmod.run": "Run",
+  "button.codingmod.clear": "Clear",
 
   "creativetab.codingmod.testitem_items": "Test Items",
   "creativetab.codingmod.test_blocks": "Test Blocks"
