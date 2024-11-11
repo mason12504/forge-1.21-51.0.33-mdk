@@ -80,7 +80,6 @@ public class TerminalScreen extends Screen {
     }
 
     private boolean compileJavaCode(String className, String code) throws IOException {
-        // Prepare source code
         String fullClassName = "net.CarsonKing.codingmod.scripts." + className;
         String sourceCode = "package net.CarsonKing.codingmod.scripts;\n" +
                 "public class " + className + " implements Runnable {\n" +
@@ -88,22 +87,24 @@ public class TerminalScreen extends Screen {
                 "    public void run() {\n" +
                 code + "\n" +
                 "    }\n" +
+                "    public static void main(String[] args) {\n" +
+                "        new " + className + "().run();\n" +
+                "    }\n" +
                 "}\n";
 
-        // Save source in .java file
         Path sourcePath = Paths.get("scripts/" + className + ".java");
         Files.createDirectories(sourcePath.getParent());
         Files.write(sourcePath, sourceCode.getBytes());
 
-        // Compile source file
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
             displayOutput("No Java compiler available.");
             return false;
         }
-        int result = compiler.run(null, null, null, sourcePath.toString());
+        int result = compiler.run(null, null, null, "-d", "scripts/", sourcePath.toString());
         return result == 0;
     }
+
 
     private String executeJavaCodeInSeparateProcess(String className) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder("java", "-cp", "scripts/", "net.CarsonKing.codingmod.scripts." + className);
@@ -119,7 +120,9 @@ public class TerminalScreen extends Screen {
         }
 
         int exitCode = process.waitFor();
-        output.append("Process exited with code ").append(exitCode);
+
+        //Prints the output code
+        //output.append("Process exited with code ").append(exitCode);
 
         return output.toString();
     }
