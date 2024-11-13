@@ -83,6 +83,9 @@ public class TerminalScreen extends Screen {
 
     private boolean compileJavaCode(String className, String code) throws IOException {
         String sourceCode = "package net.CarsonKing.codingmod.scripts;\n" +
+                "import java.util.Scanner;\n" +
+                "import java.util.ArrayList;\n" +
+                "import java.util.Arrays;\n" +
                 "public class " + className + " implements Runnable {\n" +
                 "    @Override\n" +
                 "    public void run() {\n" +
