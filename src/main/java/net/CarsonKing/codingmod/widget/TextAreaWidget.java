@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput; // Ensure this import is correct
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
@@ -15,6 +15,7 @@ public class TextAreaWidget extends AbstractWidget {
     private int cursorPosition = 0;
     private boolean isFocused = false;
     private int scrollOffset = 0; // Vertical scroll offset in pixels
+    private int horizontalScrollOffset = 0; // Horizontal scroll offset in pixels
 
     public TextAreaWidget(Font font, int x, int y, int width, int height) {
         super(x, y, width, height, Component.empty());
@@ -55,7 +56,15 @@ public class TextAreaWidget extends AbstractWidget {
         for (int i = 0; i < lines.length; i++) {
             int lineY = startY + (i * lineHeight);
             if (lineY + lineHeight > getY() && lineY < getY() + height) {
-                guiGraphics.drawString(font, lines[i], getX() + 4, lineY, 0xFFFFFF, false);
+                String lineText = lines[i];
+                // Start the line from the horizontal scroll offset
+                String scrolledText = lineText.length() > horizontalScrollOffset
+                        ? lineText.substring(horizontalScrollOffset)
+                        : "";
+
+                // Use plainSubstrByWidth to limit the visible width
+                String visibleText = font.plainSubstrByWidth(scrolledText, width - 8);
+                guiGraphics.drawString(font, visibleText, getX() + 4, lineY, 0xFFFFFF, false);
             }
         }
 
@@ -64,10 +73,12 @@ public class TextAreaWidget extends AbstractWidget {
             int cursorLine = getCursorLine();
             int cursorColumn = getCursorColumn();
             String cursorLineText = cursorLine < lines.length ? lines[cursorLine] : "";
-            int cursorX = getX() + 4 + font.width(cursorLineText.substring(0, Math.min(cursorColumn, cursorLineText.length())));
+            int cursorTextWidth = font.width(cursorLineText.substring(0, Math.min(cursorColumn, cursorLineText.length())));
+            int cursorX = getX() + 4 + cursorTextWidth - horizontalScrollOffset;
             int cursorY = startY + cursorLine * lineHeight;
 
-            if (cursorY + lineHeight > getY() && cursorY < getY() + height) {
+            if (cursorY + lineHeight > getY() && cursorY < getY() + height &&
+                    cursorX >= getX() + 4 && cursorX < getX() + width - 4) {
                 guiGraphics.fill(cursorX, cursorY, cursorX + 1, cursorY + lineHeight, 0xFFFFFFFF);
             }
         }
@@ -120,7 +131,15 @@ public class TextAreaWidget extends AbstractWidget {
                 return true;
             }
             case GLFW.GLFW_KEY_PAGE_DOWN -> {
-                scrollOffset = Math.min(getMaxScroll(), scrollOffset + height);
+                scrollOffset = Math.min(getMaxVerticalScroll(), scrollOffset + height);
+                return true;
+            }
+            case GLFW.GLFW_KEY_HOME -> {
+                moveCursorToLineStart();
+                return true;
+            }
+            case GLFW.GLFW_KEY_END -> {
+                moveCursorToLineEnd();
                 return true;
             }
             case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER -> {
@@ -140,15 +159,17 @@ public class TextAreaWidget extends AbstractWidget {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isMouseOver(mouseX, mouseY)) {
-            // Adjust scrollOffset based on vertical scroll amount (scrollY)
+            // Vertical scrolling
             scrollOffset -= scrollY * font.lineHeight;
-            scrollOffset = Math.max(0, Math.min(scrollOffset, getMaxScroll()));
+            scrollOffset = Math.max(0, Math.min(scrollOffset, getMaxVerticalScroll()));
+
+            // Horizontal scrolling
+            horizontalScrollOffset += scrollX * font.width(" ");
+            horizontalScrollOffset = Math.max(0, Math.min(horizontalScrollOffset, getMaxHorizontalScroll()));
             return true;
         }
         return false;
     }
-
-
 
     private void insertText(String input) {
         this.text = this.text.substring(0, cursorPosition) + input + this.text.substring(cursorPosition);
@@ -189,6 +210,22 @@ public class TextAreaWidget extends AbstractWidget {
         }
     }
 
+    private void moveCursorToLineStart() {
+        int lineStart = text.lastIndexOf('\n', cursorPosition - 1);
+        cursorPosition = lineStart + 1;
+        ensureCursorVisible();
+    }
+
+    private void moveCursorToLineEnd() {
+        int lineEnd = text.indexOf('\n', cursorPosition);
+        if (lineEnd == -1) {
+            cursorPosition = text.length();
+        } else {
+            cursorPosition = lineEnd;
+        }
+        ensureCursorVisible();
+    }
+
     private void ensureCursorVisible() {
         int lineHeight = font.lineHeight;
         int cursorLine = getCursorLine();
@@ -201,12 +238,38 @@ public class TextAreaWidget extends AbstractWidget {
         } else if (cursorPixelY + lineHeight > widgetEndY) {
             scrollOffset = cursorPixelY + lineHeight - height + 8;
         }
-        scrollOffset = Math.max(0, Math.min(scrollOffset, getMaxScroll()));
+
+        // Horizontal scrolling
+        String cursorLineText = getLineText(cursorLine);
+        int cursorTextWidth = font.width(cursorLineText.substring(0, getCursorColumn()));
+        int widgetStartX = horizontalScrollOffset;
+        int widgetEndX = horizontalScrollOffset + width - 8; // Subtract padding
+
+        if (cursorTextWidth < widgetStartX) {
+            horizontalScrollOffset = cursorTextWidth;
+        } else if (cursorTextWidth > widgetEndX) {
+            horizontalScrollOffset = cursorTextWidth - width + 8;
+        }
+
+        scrollOffset = Math.max(0, Math.min(scrollOffset, getMaxVerticalScroll()));
+        horizontalScrollOffset = Math.max(0, Math.min(horizontalScrollOffset, getMaxHorizontalScroll()));
     }
 
-    private int getMaxScroll() {
+    private int getMaxVerticalScroll() {
         int totalHeight = font.lineHeight * text.split("\n", -1).length;
         return Math.max(0, totalHeight - height + 8); // Add padding
+    }
+
+    private int getMaxHorizontalScroll() {
+        int maxLineWidth = 0;
+        String[] lines = text.split("\n", -1);
+        for (String line : lines) {
+            int lineWidth = font.width(line);
+            if (lineWidth > maxLineWidth) {
+                maxLineWidth = lineWidth;
+            }
+        }
+        return Math.max(0, maxLineWidth - width + 8); // Add padding
     }
 
     private int getCursorLine() {
@@ -222,6 +285,14 @@ public class TextAreaWidget extends AbstractWidget {
     private int getCursorColumn() {
         int lineStart = text.lastIndexOf('\n', cursorPosition - 1);
         return cursorPosition - lineStart - 1;
+    }
+
+    private String getLineText(int lineIndex) {
+        String[] lines = text.split("\n", -1);
+        if (lineIndex >= 0 && lineIndex < lines.length) {
+            return lines[lineIndex];
+        }
+        return "";
     }
 
     private int[] getLineOffsets() {
@@ -256,7 +327,7 @@ public class TextAreaWidget extends AbstractWidget {
         lineIndex = Math.max(0, Math.min(lineIndex, lines.length - 1));
 
         String lineText = lines[lineIndex];
-        int relativeX = (int) mouseX - getX() - 4;
+        int relativeX = (int) mouseX - getX() - 4 + horizontalScrollOffset;
         int cursorColumn = font.plainSubstrByWidth(lineText, relativeX).length();
 
         int[] lineOffsets = getLineOffsets();
@@ -265,6 +336,7 @@ public class TextAreaWidget extends AbstractWidget {
         ensureCursorVisible();
     }
 
+    @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseX < getX() + width &&
                 mouseY >= getY() && mouseY < getY() + height;
