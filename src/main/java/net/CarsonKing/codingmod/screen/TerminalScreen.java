@@ -9,12 +9,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.concurrent.TimeUnit;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -22,16 +21,8 @@ public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
     private String outputText = "";
     private int outputScrollOffset = 0;
-    private int outputHorizontalScrollOffset = 0;
     private final int imageWidth = 256;
     private final int imageHeight = 256;
-    private ConcurrentLinkedQueue<String> inputQueue = new ConcurrentLinkedQueue<>();
-    private TextAreaWidget inputArea;
-    private Process currentProcess;
-    private Thread inputThread;
-    private Thread outputThread;
-
-
 
     public TerminalScreen() {
         super(Component.translatable("screen.codingmod.terminal"));
@@ -66,31 +57,15 @@ public class TerminalScreen extends Screen {
         );
 
         setFocused(codeArea);
-
-        // Input area dimensions
-        int inputX = centerX + 10;
-        int inputY = centerY + imageHeight - 30;
-        int inputWidth = imageWidth - 20;
-        int inputHeight = 20;
-
-        // Initialize the input area
-        inputArea = new TextAreaWidget(font, inputX, inputY, inputWidth, inputHeight);
-        addRenderableWidget(inputArea);
     }
 
     private void processCode(String code) {
         try {
-            // Clear previous output and input
-            outputText = "";
-            outputScrollOffset = 0;
-            outputHorizontalScrollOffset = 0;
-            inputQueue.clear();
-
             String className = "UserScript";
             boolean success = compileJavaCode(className, code);
             if (success) {
                 String result = executeJavaCodeInSeparateProcess(className);
-                // No need to call displayOutput here
+                displayOutput(result);
             } else {
                 displayOutput("Compilation failed.");
             }
@@ -107,11 +82,7 @@ public class TerminalScreen extends Screen {
                 "public class " + className + " {\n" +
                 code + "\n" +
                 "    public static void main(String[] args) {\n" +
-                "        try {\n" +
-                "            new " + className + "().playerMain();\n" +
-                "        } catch (Exception e) {\n" +
-                "            e.printStackTrace();\n" +
-                "        }\n" +
+                "        new " + className + "().playerMain();\n" +
                 "    }\n" +
                 "}\n";
 
@@ -136,94 +107,24 @@ public class TerminalScreen extends Screen {
     }
 
     private String executeJavaCodeInSeparateProcess(String className) throws IOException, InterruptedException {
-        // Terminate any existing process and threads
-        terminateProcess();
-
         ProcessBuilder pb = new ProcessBuilder("java", "-cp", "scripts/", "net.CarsonKing.codingmod.scripts." + className);
         pb.redirectErrorStream(true);
-        currentProcess = pb.start();
+        Process process = pb.start();
 
-        // Create threads to handle input and output
-        inputThread = new Thread(() -> handleProcessInput(currentProcess));
-        outputThread = new Thread(() -> handleProcessOutput(currentProcess));
-
-        inputThread.start();
-        outputThread.start();
-
-        int exitCode;
-        if (currentProcess.waitFor(30, TimeUnit.SECONDS)) {
-            // Process finished within timeout
-            exitCode = currentProcess.exitValue();
-        } else {
-            // Process timed out
-            terminateProcess();
-            displayOutput("Process timed out.");
-            exitCode = -1;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        StringBuilder output = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            output.append(line).append("\n");
         }
 
-        // Wait for threads to finish
-        inputThread.join();
-        outputThread.join();
+        int exitCode = process.waitFor();
 
-        displayOutput("Process exited with code " + exitCode);
-
-        // Reset currentProcess and threads
-        currentProcess = null;
-        inputThread = null;
-        outputThread = null;
-
-        return outputText;
+        return output.toString();
     }
 
-    private void terminateProcess() {
-        if (currentProcess != null && currentProcess.isAlive()) {
-            currentProcess.destroy();
-        }
-        if (inputThread != null && inputThread.isAlive()) {
-            inputThread.interrupt();
-        }
-        if (outputThread != null && outputThread.isAlive()) {
-            outputThread.interrupt();
-        }
-    }
-
-
-    private void handleProcessInput(Process process) {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
-            while (process.isAlive() && !Thread.currentThread().isInterrupted()) {
-                if (!inputQueue.isEmpty()) {
-                    String input = inputQueue.poll();
-                    writer.write(input);
-                    writer.newLine();
-                    writer.flush();
-                } else {
-                    Thread.sleep(100); // Adjust as needed
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            displayOutput("Error in handleProcessInput: " + e.getMessage());
-        } catch (InterruptedException e) {
-            // Thread was interrupted, exit gracefully
-        }
-    }
-
-    private void handleProcessOutput(Process process) {
-        try (InputStream is = process.getInputStream()) {
-            int ch;
-            while ((ch = is.read()) != -1 && !Thread.currentThread().isInterrupted()) {
-                displayOutput(Character.toString((char) ch));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            displayOutput("Error in handleProcessOutput: " + e.getMessage());
-        }
-    }
-
-
-
-    private synchronized void displayOutput(String outputText) {
-        this.outputText += outputText;
+    private void displayOutput(String output) {
+        outputText = output;
         outputScrollOffset = getMaxOutputScroll();
     }
 
@@ -258,9 +159,6 @@ public class TerminalScreen extends Screen {
         }
 
         disableScissor();
-
-        // Draw input area label
-        guiGraphics.drawString(font, "Input:", inputArea.getX(), inputArea.getY() - 15, 0xFFFFFF, false);
     }
 
     @Override
@@ -273,15 +171,6 @@ public class TerminalScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-
-        if (inputArea.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
-            String userInput = inputArea.getValue();
-            inputArea.setValue(""); // Clear input area
-            inputQueue.add(userInput);
-            displayOutput("> " + userInput); // Echo input to output area
-            return true;
-        }
-
         if (codeArea.isFocused() && codeArea.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
