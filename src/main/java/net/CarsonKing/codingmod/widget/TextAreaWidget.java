@@ -22,22 +22,26 @@ public class TextAreaWidget extends AbstractWidget {
         this.font = font;
     }
 
-    public void setFocused(boolean focused) {
-        this.isFocused = focused;
-    }
-
-    public boolean isFocused() {
-        return this.isFocused;
-    }
-
-    public void setValue(String value) {
-        this.text = value;
-        this.cursorPosition = value.length();
-        ensureCursorVisible();
-    }
-
+    /**
+     * Retrieves the current text content of the TextAreaWidget.
+     *
+     * @return The text currently in the widget.
+     */
     public String getValue() {
         return this.text;
+    }
+
+    /**
+     * Sets the text content of the TextAreaWidget.
+     *
+     * @param value The new text to display in the widget.
+     */
+    public void setValue(String value) {
+        this.text = value != null ? value : "";
+        this.cursorPosition = Math.min(this.cursorPosition, this.text.length());
+        this.scrollOffset = 0;
+        this.horizontalScrollOffset = 0;
+        // Optionally, trigger a re-render or any other necessary updates here.
     }
 
     @Override
@@ -48,7 +52,7 @@ public class TextAreaWidget extends AbstractWidget {
         // Enable scissor to clip rendering to the widget's area
         enableScissor(getX(), getY(), getX() + width, getY() + height);
 
-        // Draw text
+        // Draw text with horizontal scrolling support
         String[] lines = text.split("\n", -1);
         int lineHeight = font.lineHeight;
         int startY = getY() + 4 - scrollOffset;
@@ -57,13 +61,13 @@ public class TextAreaWidget extends AbstractWidget {
             int lineY = startY + (i * lineHeight);
             if (lineY + lineHeight > getY() && lineY < getY() + height) {
                 String lineText = lines[i];
-                // Start the line from the horizontal scroll offset
-                String scrolledText = lineText.length() > horizontalScrollOffset
-                        ? lineText.substring(horizontalScrollOffset)
-                        : "";
 
-                // Use plainSubstrByWidth to limit the visible width
-                String visibleText = font.plainSubstrByWidth(scrolledText, width - 8);
+                // Determine the starting character index based on horizontalScrollOffset (pixel-based)
+                int startCharIndex = getCharacterIndexForPixel(lineText, horizontalScrollOffset);
+
+                // Get the visible substring starting from startCharIndex within the available width
+                String visibleText = font.plainSubstrByWidth(lineText.substring(startCharIndex), width - 8);
+
                 guiGraphics.drawString(font, visibleText, getX() + 4, lineY, 0xFFFFFF, false);
             }
         }
@@ -73,17 +77,31 @@ public class TextAreaWidget extends AbstractWidget {
             int cursorLine = getCursorLine();
             int cursorColumn = getCursorColumn();
             String cursorLineText = cursorLine < lines.length ? lines[cursorLine] : "";
-            int cursorTextWidth = font.width(cursorLineText.substring(0, Math.min(cursorColumn, cursorLineText.length())));
-            int cursorX = getX() + 4 + cursorTextWidth - horizontalScrollOffset;
+
+            // Find the starting character index based on horizontalScrollOffset (pixel-based)
+            int startCharIndex = getCharacterIndexForPixel(cursorLineText, horizontalScrollOffset);
+
+            // Calculate the width from startCharIndex to cursorColumn
+            String substringForWidth = "";
+            if (cursorColumn > startCharIndex && cursorColumn <= cursorLineText.length()) {
+                substringForWidth = cursorLineText.substring(startCharIndex, cursorColumn);
+            }
+
+            int cursorVisibleWidth = font.width(substringForWidth);
+
+            int cursorX = getX() + 4 + cursorVisibleWidth;
             int cursorY = startY + cursorLine * lineHeight;
 
             if (cursorY + lineHeight > getY() && cursorY < getY() + height &&
                     cursorX >= getX() + 4 && cursorX < getX() + width - 4) {
                 guiGraphics.fill(cursorX, cursorY, cursorX + 1, cursorY + lineHeight, 0xFFFFFFFF);
             }
+
+            // Ensure cursor is visible
+            ensureCursorVisible(cursorVisibleWidth);
         }
 
-        // Disable scissor
+        // Disable scissor after rendering
         disableScissor();
     }
 
@@ -174,23 +192,23 @@ public class TextAreaWidget extends AbstractWidget {
     private void insertText(String input) {
         this.text = this.text.substring(0, cursorPosition) + input + this.text.substring(cursorPosition);
         cursorPosition += input.length();
-        ensureCursorVisible();
+        ensureCursorVisible(font.width(input));
     }
 
     private void deleteText(int direction) {
         if (direction == -1 && cursorPosition > 0) {
             this.text = this.text.substring(0, cursorPosition - 1) + this.text.substring(cursorPosition);
             cursorPosition--;
-            ensureCursorVisible();
+            ensureCursorVisible(-font.width(" "));
         } else if (direction == 1 && cursorPosition < text.length()) {
             this.text = this.text.substring(0, cursorPosition) + this.text.substring(cursorPosition + 1);
-            ensureCursorVisible();
+            ensureCursorVisible(font.width(" "));
         }
     }
 
     private void moveCursor(int offset) {
         cursorPosition = Math.max(0, Math.min(cursorPosition + offset, text.length()));
-        ensureCursorVisible();
+        ensureCursorVisible(0);
     }
 
     private void moveCursorLine(int lineOffset) {
@@ -206,14 +224,14 @@ public class TextAreaWidget extends AbstractWidget {
 
             cursorPosition = lineStart + Math.min(column, lineLength);
             cursorPosition = Math.min(cursorPosition, text.length());
-            ensureCursorVisible();
+            ensureCursorVisible(0);
         }
     }
 
     private void moveCursorToLineStart() {
         int lineStart = text.lastIndexOf('\n', cursorPosition - 1);
         cursorPosition = lineStart + 1;
-        ensureCursorVisible();
+        ensureCursorVisible(0);
     }
 
     private void moveCursorToLineEnd() {
@@ -223,10 +241,10 @@ public class TextAreaWidget extends AbstractWidget {
         } else {
             cursorPosition = lineEnd;
         }
-        ensureCursorVisible();
+        ensureCursorVisible(0);
     }
 
-    private void ensureCursorVisible() {
+    private void ensureCursorVisible(int cursorVisibleWidth) {
         int lineHeight = font.lineHeight;
         int cursorLine = getCursorLine();
         int cursorPixelY = lineHeight * cursorLine;
@@ -246,9 +264,12 @@ public class TextAreaWidget extends AbstractWidget {
         int widgetEndX = horizontalScrollOffset + width - 8; // Subtract padding
 
         if (cursorTextWidth < widgetStartX) {
-            horizontalScrollOffset = cursorTextWidth;
+            horizontalScrollOffset = cursorTextWidth - 4; // Add a small buffer
+            if (horizontalScrollOffset < 0) {
+                horizontalScrollOffset = 0;
+            }
         } else if (cursorTextWidth > widgetEndX) {
-            horizontalScrollOffset = cursorTextWidth - width + 8;
+            horizontalScrollOffset = cursorTextWidth - width + 12; // Add a small buffer
         }
 
         scrollOffset = Math.max(0, Math.min(scrollOffset, getMaxVerticalScroll()));
@@ -328,12 +349,34 @@ public class TextAreaWidget extends AbstractWidget {
 
         String lineText = lines[lineIndex];
         int relativeX = (int) mouseX - getX() - 4 + horizontalScrollOffset;
-        int cursorColumn = font.plainSubstrByWidth(lineText, relativeX).length();
+        int cursorColumn = getCharacterIndexForPixel(lineText, relativeX);
 
         int[] lineOffsets = getLineOffsets();
-        cursorPosition = lineOffsets[lineIndex] + cursorColumn;
+        cursorPosition = lineOffsets[lineIndex] + Math.min(cursorColumn, lineText.length());
         cursorPosition = Math.min(cursorPosition, text.length());
-        ensureCursorVisible();
+        ensureCursorVisible(0); // Pass 0 since we're handling the adjustment within the method
+    }
+
+    /**
+     * Determines the character index in the line where the text should start based on the pixel offset.
+     *
+     * @param lineText    The text of the current line.
+     * @param pixelOffset The current horizontal scroll offset in pixels.
+     * @return The character index to start rendering from.
+     */
+    private int getCharacterIndexForPixel(String lineText, int pixelOffset) {
+        int width = 0;
+        int index = 0;
+        while (index < lineText.length()) {
+            char c = lineText.charAt(index);
+            int charWidth = font.width(Character.toString(c));
+            if (width + charWidth > pixelOffset) {
+                break;
+            }
+            width += charWidth;
+            index++;
+        }
+        return index;
     }
 
     @Override
