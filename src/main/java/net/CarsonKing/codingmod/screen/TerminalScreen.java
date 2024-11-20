@@ -10,12 +10,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
@@ -67,21 +72,21 @@ public class TerminalScreen extends Screen {
             if (success) {
                 String result = executeJavaCodeInSeparateProcess(className);
                 displayOutput(result);
-            } else {
-                displayOutput("Compilation failed.");
             }
+            // No else block needed as `compileJavaCode` already displays errors
         } catch (Exception e) {
             displayOutput("Error: " + e.getMessage());
         }
     }
 
     private boolean compileJavaCode(String className, String code) throws IOException {
-        String sourceCode = "package net.CarsonKing.codingmod.scripts;\n" +
+        String packageDeclaration = "package net.CarsonKing.codingmod.scripts;\n";
+        String sourceCode = packageDeclaration +
                 "import java.util.Scanner;\n" +
                 "import java.util.ArrayList;\n" +
                 "import java.util.Arrays;\n" +
                 "public class " + className + " {\n" +
-                code + "\n" +
+                code + "\n" + // User's code is inserted here
                 "    public static void main(String[] args) {\n" +
                 "        new " + className + "().playerMain();\n" +
                 "    }\n" +
@@ -97,14 +102,42 @@ public class TerminalScreen extends Screen {
             return false;
         }
 
-        ByteArrayOutputStream errOut = new ByteArrayOutputStream();
-        int result = compiler.run(null, null, new PrintStream(errOut), "-d", "scripts/", sourcePath.toString());
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
 
-        if (result != 0) {
-            displayOutput("Compilation failed:\n" + errOut.toString());
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(
+                Arrays.asList(sourcePath.toFile())
+        );
+
+        JavaCompiler.CompilationTask task = compiler.getTask(
+                null, // default Writer for additional output
+                fileManager,
+                diagnostics,
+                Arrays.asList("-d", "scripts/"), // compilation options
+                null,
+                compilationUnits
+        );
+
+        boolean success = task.call();
+        fileManager.close();
+
+        if (!success) {
+            StringBuilder errorMessage = new StringBuilder("Compilation failed:\n");
+            for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+                if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
+                    long lineNumber = diagnostic.getLineNumber();
+                    String message = diagnostic.getMessage(null);
+                    errorMessage.append("Error on line ")
+                            .append(lineNumber - 5)
+                            .append(": ")
+                            .append(message)
+                            .append("\n");
+                }
+            }
+            displayOutput(errorMessage.toString());
         }
 
-        return result == 0;
+        return success;
     }
 
     private String executeJavaCodeInSeparateProcess(String className) throws IOException, InterruptedException {
@@ -154,7 +187,7 @@ public class TerminalScreen extends Screen {
         int startY = outputY - outputScrollOffset;
 
         for (String line : outputLines) {
-            int lineY = startY + (lineHeight);
+            int lineY = startY + lineHeight;
             if (lineY + lineHeight > outputY && lineY < outputY + outputHeight) {
                 // Apply horizontal scroll offset
                 guiGraphics.drawString(font, line, outputX - outputHorizontalScrollOffset, lineY, 0xFFFFFF, false);
@@ -202,6 +235,7 @@ public class TerminalScreen extends Screen {
             // Vertical scrolling
             outputScrollOffset -= scrollY * font.lineHeight;
             outputScrollOffset = Math.max(0, Math.min(outputScrollOffset, getMaxOutputScroll()));
+
 
             return true;
         } else if (codeArea.isMouseOver(mouseX, mouseY)) {
