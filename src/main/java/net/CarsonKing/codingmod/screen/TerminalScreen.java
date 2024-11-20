@@ -21,6 +21,7 @@ public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
     private String outputText = "";
     private int outputScrollOffset = 0;
+    private int outputHorizontalScrollOffset = 0; // New variable for horizontal scroll
     private final int imageWidth = 256;
     private final int imageHeight = 256;
 
@@ -126,6 +127,7 @@ public class TerminalScreen extends Screen {
     private void displayOutput(String output) {
         outputText = output;
         outputScrollOffset = getMaxOutputScroll();
+        outputHorizontalScrollOffset = 0; // Reset horizontal scroll when new output is displayed
     }
 
     @Override
@@ -151,11 +153,13 @@ public class TerminalScreen extends Screen {
         int lineHeight = font.lineHeight;
         int startY = outputY - outputScrollOffset;
 
-        for (int i = 0; i < outputLines.length; i++) {
-            int lineY = startY + (i * lineHeight);
+        for (String line : outputLines) {
+            int lineY = startY + (lineHeight);
             if (lineY + lineHeight > outputY && lineY < outputY + outputHeight) {
-                guiGraphics.drawString(font, outputLines[i], outputX, lineY, 0xFFFFFF, false);
+                // Apply horizontal scroll offset
+                guiGraphics.drawString(font, line, outputX - outputHorizontalScrollOffset, lineY, 0xFFFFFF, false);
             }
+            startY += lineHeight;
         }
 
         disableScissor();
@@ -174,6 +178,17 @@ public class TerminalScreen extends Screen {
         if (codeArea.isFocused() && codeArea.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
+
+        // Handle left and right arrow keys for output scrolling
+        if (keyCode == GLFW.GLFW_KEY_LEFT) {
+            outputHorizontalScrollOffset = Math.max(0, outputHorizontalScrollOffset - 10); // Scroll left by 10 pixels
+            return true;
+        }
+        if (keyCode == GLFW.GLFW_KEY_RIGHT) {
+            outputHorizontalScrollOffset = Math.min(getMaxOutputHorizontalScroll(), outputHorizontalScrollOffset + 10); // Scroll right by 10 pixels
+            return true;
+        }
+
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             onClose();
             return true;
@@ -184,8 +199,10 @@ public class TerminalScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isMouseOverOutput(mouseX, mouseY)) {
+            // Vertical scrolling
             outputScrollOffset -= scrollY * font.lineHeight;
             outputScrollOffset = Math.max(0, Math.min(outputScrollOffset, getMaxOutputScroll()));
+
             return true;
         } else if (codeArea.isMouseOver(mouseX, mouseY)) {
             return codeArea.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -209,6 +226,17 @@ public class TerminalScreen extends Screen {
         return Math.max(0, totalHeight - outputHeight);
     }
 
+    private int getMaxOutputHorizontalScroll() {
+        int maxWidth = 0;
+        for (String line : outputText.split("\n")) {
+            int lineWidth = font.width(line);
+            if (lineWidth > maxWidth) {
+                maxWidth = lineWidth;
+            }
+        }
+        return Math.max(0, maxWidth - (imageWidth - 20));
+    }
+
     private void enableScissor(int x1, int y1, int x2, int y2) {
         double scale = Minecraft.getInstance().getWindow().getGuiScale();
         RenderSystem.enableScissor(
@@ -223,10 +251,3 @@ public class TerminalScreen extends Screen {
         RenderSystem.disableScissor();
     }
 }
-
-
-
-
-
-
-
