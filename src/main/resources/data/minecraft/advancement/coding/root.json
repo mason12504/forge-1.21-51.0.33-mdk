@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:book"
+    },
+    "title": "Learn to Code",
+    "description": "Start your programming journey! Refer to the Lessons Book found in the Programmer's House for any help!",
+    "frame": "task",
+    "background": "codingmod:textures/block/test_block.png",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:written_book"
+          }
+        ]
+      }
+    }
+  }
+}
