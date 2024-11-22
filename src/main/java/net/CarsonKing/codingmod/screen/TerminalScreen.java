@@ -32,6 +32,7 @@ public class TerminalScreen extends Screen {
     private int outputHorizontalScrollOffset = 0; // Variable for horizontal scroll
     private final int imageWidth = 256;
     private final int imageHeight = 256;
+    private long nextProblemTime = 0; // Variable to determine when the next problem starts
 
     // ExecutorService to handle asynchronous test execution
     private final ExecutorService testExecutor = Executors.newSingleThreadExecutor();
@@ -45,6 +46,19 @@ public class TerminalScreen extends Screen {
         TestCase(String description, String code, String expectedOutput) {
             this.description = description;
             this.code = code;
+            this.expectedOutput = expectedOutput;
+        }
+    }
+
+    // Inner class to represent a coding problem
+    private static class CodingProblem {
+        String description;
+        String codeSnippet;
+        String expectedOutput;
+
+        CodingProblem(String description, String codeSnippet, String expectedOutput) {
+            this.description = description;
+            this.codeSnippet = codeSnippet;
             this.expectedOutput = expectedOutput;
         }
     }
@@ -144,6 +158,149 @@ public class TerminalScreen extends Screen {
             )
     );
 
+    // List of coding problems (11 problems)
+    private final List<CodingProblem> codingProblems = Arrays.asList(
+            // Problem 1
+            new CodingProblem(
+                    "1. Write a program that prints “Hello World!”.",
+                    "public void playerMain() {\n" +
+                            "    System.out.println(\"Hello World!\");\n" +
+                            "}",
+                    "Hello World!\n"
+            ),
+            // Problem 2
+            new CodingProblem(
+                    "2. Write a program that prints the circumference of a circle with radius 5. Reminder: Circumference = 3.14 * 5",
+                    "public void playerMain() {\n" +
+                            "    double radius = 5;\n" +
+                            "    double circumference = 3.14 * radius;\n" +
+                            "    System.out.println(circumference);\n" +
+                            "}",
+                    "15.7\n"
+            ),
+            // Problem 3
+            new CodingProblem(
+                    "3. Create an integer variable with a value of 5. Print that value, and then increment the variable by 1. You can do this however you want, but when you have done so, print the variable again. Your program should print two total values when it is run.",
+                    "public void playerMain() {\n" +
+                            "    int number = 5;\n" +
+                            "    System.out.println(number);\n" +
+                            "    number++;\n" +
+                            "    System.out.println(number);\n" +
+                            "}",
+                    "5\n6\n"
+            ),
+            // Problem 4
+            new CodingProblem(
+                    "4. Create a string array containing only one entry: “My first string”. Once you have created this array, go ahead and print it.",
+                    "public void playerMain() {\n" +
+                            "    String[] strings = {\"My first string\"};\n" +
+                            "    System.out.println(strings[0]);\n" +
+                            "}",
+                    "My first string\n"
+            ),
+            // Problem 5
+            new CodingProblem(
+                    "5. Create an empty string ArrayList, and then print its size. Once you’ve done that, use `.add` to place “Steve” inside the ArrayList, and then print his name!",
+                    "import java.util.ArrayList;\n" +
+                            "public void playerMain() {\n" +
+                            "    ArrayList<String> names = new ArrayList<>();\n" +
+                            "    System.out.println(names.size());\n" +
+                            "    names.add(\"Steve\");\n" +
+                            "    System.out.println(names.get(0));\n" +
+                            "}",
+                    "0\nSteve\n"
+            ),
+            // Problem 6
+            new CodingProblem(
+                    "6. Write a program that does the following: Begin by creating an integer variable with a value of 5. Add 7 to it, subtract 9, multiply it by 10, and then divide it by 6. Finally, calculate the remainder of the variable when dividing it by 5.",
+                    "public void playerMain() {\n" +
+                            "    int a = 5;\n" +
+                            "    a += 7;\n" +
+                            "    a -= 9;\n" +
+                            "    a *= 10;\n" +
+                            "    a /= 6;\n" +
+                            "    int remainder = a % 5;\n" +
+                            "    System.out.println(remainder);\n" +
+                            "}",
+                    "0\n"
+            ),
+            // Problem 7
+            new CodingProblem(
+                    "7. Write a program that generates a true value and a false value, and then prints them out.",
+                    "public void playerMain() {\n" +
+                            "    boolean valTrue = true;\n" +
+                            "    boolean valFalse = false;\n" +
+                            "    System.out.println(valTrue);\n" +
+                            "    System.out.println(valFalse);\n" +
+                            "}",
+                    "true\nfalse\n"
+            ),
+            // Problem 8
+            new CodingProblem(
+                    "8. Write a program where you have three integer values, each holding the values 2, 5, and 5 respectively. Print the values of these three variables. Then, create an AND statement checking to see if 2==5 and 5==5. Then, create an OR statement checking the same conditions. Print the true or false values of these AND or statements.",
+                    "public void playerMain() {\n" +
+                            "    int a = 2;\n" +
+                            "    int b = 5;\n" +
+                            "    int c = 5;\n" +
+                            "    System.out.println(a);\n" +
+                            "    System.out.println(b);\n" +
+                            "    System.out.println(c);\n" +
+                            "    boolean andResult = (a == 5) && (b == 5);\n" +
+                            "    boolean orResult = (a == 5) || (b == 5);\n" +
+                            "    System.out.println(andResult);\n" +
+                            "    System.out.println(orResult);\n" +
+                            "}",
+                    "2\n5\n5\nfalse\ntrue\n"
+            ),
+            // Problem 9
+            new CodingProblem(
+                    "9. Write a program that has the following: An integer variable, `a`, which has a value of 7. An `if` statement, which checks to see if `a < 5`. An `else if` statement, which checks to see if `a < 10`. An `else` statement, which checks to see if `a >= 10`.",
+                    "public void playerMain() {\n" +
+                            "    int a = 7;\n" +
+                            "    if(a < 5) {\n" +
+                            "        System.out.println(\"a is less than 5\");\n" +
+                            "    } else if(a < 10) {\n" +
+                            "        System.out.println(\"a is less than 10\");\n" +
+                            "    } else {\n" +
+                            "        System.out.println(\"a is 10 or greater\");\n" +
+                            "    }\n" +
+                            "}",
+                    "a is less than 10\n"
+            ),
+            // Problem 10
+            new CodingProblem(
+                    "10. Write a program containing your own exponential calculator function. Once you’ve created it, call your function and output the result of 2^10.",
+                    "public void playerMain() {\n" +
+                            "    int result = exponent(2, 10);\n" +
+                            "    System.out.println(result);\n" +
+                            "}\n\n" +
+                            "public int exponent(int base, int power) {\n" +
+                            "    int result = 1;\n" +
+                            "    for(int i = 0; i < power; i++) {\n" +
+                            "        result *= base;\n" +
+                            "    }\n" +
+                            "    return result;\n" +
+                            "}",
+                    "1024\n"
+            ),
+            // Problem 11
+            new CodingProblem(
+                    "11. Write a program using while loops that count from 5 to 10. During each loop, print the number prior to incrementing it.",
+                    "public void playerMain() {\n" +
+                            "    int number = 5;\n" +
+                            "    while(number <= 10) {\n" +
+                            "        System.out.println(number);\n" +
+                            "        number++;\n" +
+                            "    }\n" +
+                            "}",
+                    "5\n6\n7\n8\n9\n10\n"
+            )
+    );
+
+    // State variables for Learning Mode
+    private boolean isLearningModeActive = false;
+    private int currentProblemIndex = 0;
+
     public TerminalScreen() {
         super(Component.translatable("screen.codingmod.terminal"));
     }
@@ -178,17 +335,54 @@ public class TerminalScreen extends Screen {
                         .build()
         );
 
-        // "Test" Button
+        // "TEST CASES" Button
         addRenderableWidget(
-                Button.builder(Component.translatable("TEST CASES"), button -> {
+                Button.builder(Component.literal("TEST CASES"), button -> {
                             runTests();
                         })
                         .pos(centerX + 150, centerY + imageHeight - 110)
-                        .size(60, 20)
+                        .size(80, 20) // Increased width to fit "TEST CASES"
+                        .build()
+        );
+
+        // "LEARNING MODE" Button
+        addRenderableWidget(
+                Button.builder(Component.literal("LEARNING MODE"), button -> {
+                            enterLearningMode();
+                        })
+                        .pos(centerX + 240, centerY + imageHeight - 110) // Adjust position as needed
+                        .size(140, 20) // Adjust size to fit the label
                         .build()
         );
 
         setFocused(codeArea);
+    }
+
+    private void enterLearningMode() {
+        if (isLearningModeActive) {
+            // Already in Learning Mode
+            displayOutput("Already in Learning Mode.\n");
+            return;
+        }
+
+        isLearningModeActive = true;
+        currentProblemIndex = 0;
+        displayCurrentProblem();
+    }
+
+    private void displayCurrentProblem() {
+        if (currentProblemIndex >= codingProblems.size()) {
+            displayOutput("🎉 Congratulations! You have completed all the coding problems.\n");
+            isLearningModeActive = false;
+            return;
+        }
+
+        CodingProblem currentProblem = codingProblems.get(currentProblemIndex);
+        String problemDescription = "📘 Problem " + (currentProblemIndex + 1) + " of " + codingProblems.size() + ":\n" +
+                currentProblem.description + "\n\n" +
+                "📝 Please write your code in the terminal and click 'Run' to submit.\n";
+
+        displayOutput(problemDescription);
     }
 
     private void processCode(String code) {
@@ -197,17 +391,64 @@ public class TerminalScreen extends Screen {
             boolean success = compileJavaCode(className, code);
             if (success) {
                 String result = executeJavaCodeInSeparateProcess(className);
-                displayOutput(result);
+                if (isLearningModeActive) {
+                    checkLearningModeOutput(result);
+                } else {
+                    displayOutput(result);
+                }
             }
             // No else block needed as `compileJavaCode` already displays errors
         } catch (Exception e) {
-            displayOutput("Error: " + e.getMessage());
+            displayOutput("⚠️ Error: " + e.getMessage() + "\n");
+        }
+    }
+
+    private void checkLearningModeOutput(String actualOutput) {
+        CodingProblem currentProblem = codingProblems.get(currentProblemIndex);
+        String expectedOutput = currentProblem.expectedOutput;
+
+        // Trim to avoid issues with trailing spaces or newlines
+        boolean isCorrect = actualOutput.trim().equals(expectedOutput.trim());
+
+        // Prepare the result message
+        StringBuilder resultMessage = new StringBuilder();
+
+        if (isCorrect) {
+            resultMessage.append("✅ Correct Output!\n");
+            // Award the player a diamond
+            awardDiamondToPlayer();
+            resultMessage.append("💎 You've been awarded a Diamond!\n\n");
+            // Set the time to move to the next problem in 3 seconds
+            nextProblemTime = System.currentTimeMillis() + 3000;
+            // Do not immediately increment the problem index or display the next problem
+        } else {
+            resultMessage.append("❌ Incorrect Output.\n");
+            resultMessage.append("**Expected Output:**\n");
+            resultMessage.append(expectedOutput).append("\n");
+            resultMessage.append("**Your Output:**\n");
+            resultMessage.append(actualOutput).append("\n");
+            resultMessage.append("🔄 Please try again.\n\n");
+        }
+
+        displayOutput(resultMessage.toString());
+    }
+
+
+    private void awardDiamondToPlayer() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && mc.level != null) {
+            // Create a new diamond item stack
+            net.minecraft.world.item.ItemStack diamond = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 1);
+            // Add the diamond to the player's inventory
+            mc.player.getInventory().add(diamond);
+            // Optional: Notify the player with a chat message
+            mc.player.sendSystemMessage(Component.literal("💎 You have received a Diamond!"));
         }
     }
 
     private void runTests() {
         testExecutor.submit(() -> {
-            StringBuilder testResults = new StringBuilder("Running Tests...\n\n");
+            StringBuilder testResults = new StringBuilder("🔍 Running Tests...\n\n");
 
             for (int i = 0; i < testCases.size(); i++) {
                 TestCase testCase = testCases.get(i);
@@ -225,7 +466,7 @@ public class TerminalScreen extends Screen {
                     continue;
                 }
 
-                testResults.append("Test ").append(testNumber).append(": ").append(testCase.description).append("\n\n");
+                testResults.append("📄 Test ").append(testNumber).append(": ").append(testCase.description).append("\n\n");
 
                 try {
                     String className = "UserScript";
@@ -248,7 +489,7 @@ public class TerminalScreen extends Screen {
                         isPass = actualOutput.contains(testCase.expectedOutput.trim());
                     } else {
                         // For other tests, compare actual output with expected output
-                        isPass = actualOutput.equals(testCase.expectedOutput);
+                        isPass = actualOutput.trim().equals(testCase.expectedOutput.trim());
                     }
 
                     // Append Expected and Actual Outputs
@@ -275,7 +516,7 @@ public class TerminalScreen extends Screen {
             // Append summary
             int passed = countOccurrences(testResults.toString(), "✅ Passed");
             int failed = countOccurrences(testResults.toString(), "❌ Failed");
-            testResults.append("**Test Summary:**\n");
+            testResults.append("📊 **Test Summary:**\n");
             testResults.append("✅ Passed: ").append(passed).append("\n");
             testResults.append("❌ Failed: ").append(failed).append("\n");
 
@@ -298,7 +539,6 @@ public class TerminalScreen extends Screen {
     private boolean compileJavaCode(String className, String code) throws IOException {
         String packageDeclaration = "package net.CarsonKing.codingmod.scripts;\n";
         String sourceCode = packageDeclaration +
-                "import java.util.Scanner;\n" +
                 "import java.util.ArrayList;\n" +
                 "import java.util.Arrays;\n" +
                 "public class " + className + " {\n" +
@@ -314,7 +554,7 @@ public class TerminalScreen extends Screen {
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         if (compiler == null) {
-            displayOutput("No Java compiler available.");
+            displayOutput("⚠️ No Java compiler available.");
             return false;
         }
 
@@ -338,13 +578,13 @@ public class TerminalScreen extends Screen {
         fileManager.close();
 
         if (!success) {
-            StringBuilder errorMessage = new StringBuilder("Compilation failed:\n");
+            StringBuilder errorMessage = new StringBuilder("⚠️ Compilation failed:\n");
             for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
                 if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                     long lineNumber = diagnostic.getLineNumber();
                     String message = diagnostic.getMessage(null);
                     errorMessage.append("Error on line ")
-                            .append(lineNumber - 4)
+                            .append(lineNumber)
                             .append(": ")
                             .append(message)
                             .append("\n");
@@ -378,6 +618,16 @@ public class TerminalScreen extends Screen {
         outputText = output;
         outputScrollOffset = getMaxOutputScroll();
         outputHorizontalScrollOffset = 0; // Reset horizontal scroll when new output is displayed
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (nextProblemTime > 0 && System.currentTimeMillis() >= nextProblemTime) {
+            nextProblemTime = 0; // Reset the timer
+            currentProblemIndex++;
+            displayCurrentProblem();
+        }
     }
 
     @Override
