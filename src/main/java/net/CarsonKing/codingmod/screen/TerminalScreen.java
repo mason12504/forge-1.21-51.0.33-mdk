@@ -441,8 +441,6 @@ public class TerminalScreen extends Screen {
             net.minecraft.world.item.ItemStack diamond = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 1);
             // Add the diamond to the player's inventory
             mc.player.getInventory().add(diamond);
-            // Optional: Notify the player with a chat message
-            mc.player.sendSystemMessage(Component.literal("💎 You have received a Diamond!"));
         }
     }
 
