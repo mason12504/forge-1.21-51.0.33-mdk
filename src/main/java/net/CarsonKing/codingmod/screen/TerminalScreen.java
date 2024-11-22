@@ -21,14 +21,60 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
     private String outputText = "";
     private int outputScrollOffset = 0;
-    private int outputHorizontalScrollOffset = 0; // New variable for horizontal scroll
+    private int outputHorizontalScrollOffset = 0; // Variable for horizontal scroll
     private final int imageWidth = 256;
     private final int imageHeight = 256;
+
+    // ExecutorService to handle asynchronous test execution
+    private final ExecutorService testExecutor = Executors.newSingleThreadExecutor();
+
+    // Inner class to represent a test case
+    private static class TestCase {
+        String description;
+        String code;
+        String expectedOutput;
+
+        TestCase(String description, String code, String expectedOutput) {
+            this.description = description;
+            this.code = code;
+            this.expectedOutput = expectedOutput;
+        }
+    }
+
+    // List of predefined test cases
+    private final List<TestCase> testCases = Arrays.asList(
+            new TestCase(
+                    "Test 1: Successful Compilation and Execution",
+                    "public void playerMain() {\n" +
+                            "    System.out.println(\"Hello, World!\");\n" +
+                            "}",
+                    "Hello, World!\n"
+            ),
+            new TestCase(
+                    "Test 2: Compilation Error (Missing Semicolon)",
+                    "public void playerMain() {\n" +
+                            "    System.out.println(\"Missing semicolon\")\n" + // Missing semicolon
+                            "}",
+                    "Compilation failed:\n" +
+                            "Error on line 3: ';' expected\n"
+            ),
+            new TestCase(
+                    "Test 3: Runtime Error (NullPointerException)",
+                    "public void playerMain() {\n" +
+                            "    String s = null;\n" +
+                            "    System.out.println(s.length());\n" + // This will cause NullPointerException
+                            "}",
+                    "java.lang.NullPointerException"
+            )
+    );
 
     public TerminalScreen() {
         super(Component.translatable("screen.codingmod.terminal"));
@@ -45,6 +91,7 @@ public class TerminalScreen extends Screen {
         codeArea.setFocused(true);
         addRenderableWidget(codeArea);
 
+        // "Run" Button
         addRenderableWidget(
                 Button.builder(Component.translatable("button.codingmod.run"), button -> {
                             String code = codeArea.getValue();
@@ -55,9 +102,20 @@ public class TerminalScreen extends Screen {
                         .build()
         );
 
+        // "Clear" Button
         addRenderableWidget(
                 Button.builder(Component.translatable("button.codingmod.clear"), button -> codeArea.setValue(""))
                         .pos(centerX + 80, centerY + imageHeight - 110)
+                        .size(60, 20)
+                        .build()
+        );
+
+        // "Test" Button
+        addRenderableWidget(
+                Button.builder(Component.translatable("button.codingmod.test"), button -> {
+                            runTests();
+                        })
+                        .pos(centerX + 150, centerY + imageHeight - 110)
                         .size(60, 20)
                         .build()
         );
@@ -77,6 +135,93 @@ public class TerminalScreen extends Screen {
         } catch (Exception e) {
             displayOutput("Error: " + e.getMessage());
         }
+    }
+
+    private void runTests() {
+        testExecutor.submit(() -> {
+            StringBuilder testResults = new StringBuilder("Running Tests...\n\n");
+
+            for (TestCase testCase : testCases) {
+                // Update the codeArea with the test case's code on the main thread
+                Minecraft.getInstance().execute(() -> codeArea.setValue(testCase.code));
+
+                // Wait for the GUI to update and for the user to see the code
+                try {
+                    Thread.sleep(1000); // 1-second delay
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    testResults.append("❌ Test interrupted.\n\n");
+                    continue;
+                }
+
+                testResults.append(testCase.description).append(":\n");
+                try {
+                    String className = "UserScript";
+                    boolean success = compileJavaCode(className, testCase.code);
+                    if (success) {
+                        String result = executeJavaCodeInSeparateProcess(className);
+                        // Special handling for runtime error tests
+                        if (testCase.description.contains("Runtime Error")) {
+                            if (result.contains("java.lang.NullPointerException")) {
+                                testResults.append("✅ Passed\n");
+                            } else {
+                                testResults.append("❌ Failed\n");
+                                testResults.append("Expected NullPointerException but got:\n").append(result).append("\n");
+                            }
+                        } else {
+                            // Compare expected output with actual output
+                            if (result.equals(testCase.expectedOutput)) {
+                                testResults.append("✅ Passed\n");
+                            } else {
+                                testResults.append("❌ Failed\n");
+                                testResults.append("Expected Output:\n").append(testCase.expectedOutput);
+                                testResults.append("Actual Output:\n").append(result).append("\n");
+                            }
+                        }
+                    } else {
+                        // Compilation failed, compare the expected compilation failure message
+                        if (testCase.description.contains("Compilation Error")) {
+                            if (outputText.contains(testCase.expectedOutput.trim())) { // Partial match
+                                testResults.append("✅ Passed\n");
+                            } else {
+                                testResults.append("❌ Failed\n");
+                                testResults.append("Expected Error:\n").append(testCase.expectedOutput);
+                                testResults.append("Actual Error:\n").append(outputText).append("\n");
+                            }
+                        } else {
+                            // Unexpected compilation failure
+                            testResults.append("❌ Failed\n");
+                            testResults.append("Unexpected Compilation Error:\n").append(outputText).append("\n");
+                        }
+                    }
+                } catch (Exception e) {
+                    testResults.append("❌ Failed\n");
+                    testResults.append("Exception occurred: ").append(e.getMessage()).append("\n");
+                }
+                testResults.append("\n");
+            }
+
+            // Append summary
+            int passed = countOccurrences(testResults.toString(), "✅ Passed");
+            int failed = countOccurrences(testResults.toString(), "❌ Failed");
+            testResults.append("Test Summary:\n");
+            testResults.append("✅ Passed: ").append(passed).append("\n");
+            testResults.append("❌ Failed: ").append(failed).append("\n");
+
+            // Display the test results on the main thread
+            Minecraft.getInstance().execute(() -> displayOutput(testResults.toString()));
+        });
+    }
+
+    // Utility method to count occurrences of a substring
+    private int countOccurrences(String str, String subStr) {
+        int count = 0;
+        int idx = 0;
+        while ((idx = str.indexOf(subStr, idx)) != -1) {
+            count++;
+            idx += subStr.length();
+        }
+        return count;
     }
 
     private boolean compileJavaCode(String className, String code) throws IOException {
@@ -128,7 +273,7 @@ public class TerminalScreen extends Screen {
                     long lineNumber = diagnostic.getLineNumber();
                     String message = diagnostic.getMessage(null);
                     errorMessage.append("Error on line ")
-                            .append(lineNumber - 5)
+                            .append(lineNumber - 4)
                             .append(": ")
                             .append(message)
                             .append("\n");
@@ -154,6 +299,7 @@ public class TerminalScreen extends Screen {
 
         int exitCode = process.waitFor();
 
+        // If there was an error during execution, it would be part of the output
         return output.toString();
     }
 
@@ -283,5 +429,12 @@ public class TerminalScreen extends Screen {
 
     private void disableScissor() {
         RenderSystem.disableScissor();
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        // Shutdown the test executor to free resources
+        testExecutor.shutdownNow();
     }
 }
