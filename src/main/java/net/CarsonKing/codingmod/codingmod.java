@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.CarsonKing.codingmod.ModItems.ModCreativeModeTabs;
 import net.CarsonKing.codingmod.ModItems.ModItems;
 import net.CarsonKing.codingmod.block.ModBlocks;
+import net.CarsonKing.codingmod.villager.ModVillagers;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,6 +49,9 @@ public class codingmod
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+
+        // Register the custom villager code
+        ModVillagers.register(modEventBus);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
