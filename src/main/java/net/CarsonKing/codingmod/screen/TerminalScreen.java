@@ -351,7 +351,7 @@ public class TerminalScreen extends Screen {
                             enterLearningMode();
                         })
                         .pos(centerX + 240, centerY + imageHeight - 110) // Adjust position as needed
-                        .size(140, 20) // Adjust size to fit the label
+                        .size(100, 20) // Adjust size to fit the label
                         .build()
         );
 
@@ -582,7 +582,7 @@ public class TerminalScreen extends Screen {
                     long lineNumber = diagnostic.getLineNumber();
                     String message = diagnostic.getMessage(null);
                     errorMessage.append("Error on line ")
-                            .append(lineNumber)
+                            .append(lineNumber - 3)
                             .append(": ")
                             .append(message)
                             .append("\n");
