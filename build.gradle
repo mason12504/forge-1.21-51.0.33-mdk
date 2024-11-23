@@ -9,6 +9,8 @@ plugins {
 version = mod_version
 group = mod_group_id
 
+
+
 base {
     archivesName = mod_id
 }
@@ -76,7 +78,7 @@ minecraft {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            property 'forge.logging.console.level', 'debug'
+            property 'forg``e.logging.console.level', 'debug'
         }
 
         client {
@@ -127,6 +129,7 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation 'org.graalvm.js:js:21.3.0'
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
