@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
-
+import net.minecraft.nbt.CompoundTag;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -305,11 +305,48 @@ public class TerminalScreen extends Screen {
         super(Component.translatable("screen.codingmod.terminal"));
     }
 
+    // Saves Progress for the problem the player is on
+    private void saveProgress() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            mc.player.getPersistentData().putInt("CurrentProblemIndex", currentProblemIndex);
+        }
+    }
+    // Loads Progress for the problem the player is on
+    private void loadProgress() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            currentProblemIndex = mc.player.getPersistentData().getInt("CurrentProblemIndex");
+        }
+    }
+
     @Override
     protected void init() {
         super.init();
         int centerX = (width - imageWidth) / 2;
         int centerY = (height - imageHeight) / 2;
+
+        // Output Screen Dimensions
+        int outputX = centerX + 10;
+        int outputY = centerY + imageHeight - 90;
+        int outputWidth = imageWidth - 20; // 236 pixels
+
+        // Button Widths
+        int runButtonWidth = 50;
+        int clearButtonWidth = 50;
+        int testCasesButtonWidth = 68;
+        int learningModeButtonWidth = 68;
+
+        // Verify total widths sum up to outputWidth
+        int totalButtonWidth = runButtonWidth + clearButtonWidth + testCasesButtonWidth + learningModeButtonWidth; // Should be 236
+
+        // Button Positions
+        int buttonY = centerY + imageHeight - 110; // Same as before
+
+        int button1X = outputX;
+        int button2X = button1X + runButtonWidth;
+        int button3X = button2X + clearButtonWidth;
+        int button4X = button3X + testCasesButtonWidth;
 
         Font font = Minecraft.getInstance().font;
         codeArea = new TextAreaWidget(font, centerX + 10, centerY + 10, imageWidth - 20, imageHeight - 130);
@@ -322,16 +359,16 @@ public class TerminalScreen extends Screen {
                             String code = codeArea.getValue();
                             processCode(code);
                         })
-                        .pos(centerX + 10, centerY + imageHeight - 110)
-                        .size(60, 20)
+                        .pos(button1X, buttonY)
+                        .size(runButtonWidth, 20)
                         .build()
         );
 
         // "Clear" Button
         addRenderableWidget(
                 Button.builder(Component.translatable("button.codingmod.clear"), button -> codeArea.setValue(""))
-                        .pos(centerX + 80, centerY + imageHeight - 110)
-                        .size(60, 20)
+                        .pos(button2X, buttonY)
+                        .size(clearButtonWidth, 20)
                         .build()
         );
 
@@ -340,8 +377,8 @@ public class TerminalScreen extends Screen {
                 Button.builder(Component.literal("TEST CASES"), button -> {
                             runTests();
                         })
-                        .pos(centerX + 150, centerY + imageHeight - 110)
-                        .size(80, 20) // Increased width to fit "TEST CASES"
+                        .pos(button3X, buttonY)
+                        .size(testCasesButtonWidth, 20)
                         .build()
         );
 
@@ -350,8 +387,8 @@ public class TerminalScreen extends Screen {
                 Button.builder(Component.literal("LEARNING MODE"), button -> {
                             enterLearningMode();
                         })
-                        .pos(centerX + 240, centerY + imageHeight - 110) // Adjust position as needed
-                        .size(100, 20) // Adjust size to fit the label
+                        .pos(button4X, buttonY)
+                        .size(learningModeButtonWidth, 20)
                         .build()
         );
 
@@ -366,13 +403,22 @@ public class TerminalScreen extends Screen {
         }
 
         isLearningModeActive = true;
-        currentProblemIndex = 0;
+
+        // Load the saved progress
+        loadProgress();
+
         displayCurrentProblem();
     }
+
 
     private void displayCurrentProblem() {
         if (currentProblemIndex >= codingProblems.size()) {
             displayOutput("🎉 Congratulations! You have completed all the coding problems.\n");
+
+            // Reset progress and save
+            currentProblemIndex = 0;
+            saveProgress();
+
             isLearningModeActive = false;
             return;
         }
@@ -624,6 +670,7 @@ public class TerminalScreen extends Screen {
         if (nextProblemTime > 0 && System.currentTimeMillis() >= nextProblemTime) {
             nextProblemTime = 0; // Reset the timer
             currentProblemIndex++;
+            saveProgress(); // Save progress after moving to the next problem
             displayCurrentProblem();
         }
     }
@@ -753,6 +800,10 @@ public class TerminalScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
+
+        // Save the current progress
+        saveProgress();
+
         // Shutdown the test executor to free resources
         testExecutor.shutdownNow();
     }
