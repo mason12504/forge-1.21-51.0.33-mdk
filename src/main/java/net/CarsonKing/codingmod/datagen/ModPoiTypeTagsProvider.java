@@ -12,11 +12,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
+// gives a PoiTypeTag (Point of interest tag) to the coder profession
+// point of interest block is the terminal
 public class ModPoiTypeTagsProvider extends PoiTypeTagsProvider {
     public ModPoiTypeTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(pOutput, pProvider, codingmod.MOD_ID, existingFileHelper);
     }
 
+    // Basically this just adds the coder jobsite POI code from ModVillagers somehow
     @Override
     protected void addTags(HolderLookup.Provider pProvider){
         tag(PoiTypeTags.ACQUIRABLE_JOB_SITE)

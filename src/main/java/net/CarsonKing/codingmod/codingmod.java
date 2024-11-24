@@ -65,8 +65,9 @@ public class codingmod
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            // add item tos creative mode ingredients tab
             event.accept(ModItems.TESTITEM);
-            event.accept(ModItems.TESTITEMMASON); // add mason's item to creative mode ingredients tab
+            event.accept(ModItems.TESTITEMMASON);
         }
 
         if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {

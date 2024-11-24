@@ -2,6 +2,20 @@
   "item.codingmod.testitem": "Test Item",
   "item.codingmod.masontest": "Mason Test Item",
 
+
+  "item.codingmod.problem_1_complete": "Level 1 Token",
+  "item.codingmod.problem_2_complete": "Level 2 Token",
+  "item.codingmod.problem_3_complete": "Level 3 Token",
+  "item.codingmod.problem_4_complete": "Level 4 Token",
+  "item.codingmod.problem_5_complete": "Level 5 Token",
+  "item.codingmod.problem_6_complete": "Level 6 Token",
+  "item.codingmod.problem_7_complete": "Level 7 Token",
+  "item.codingmod.problem_8_complete": "Level 8 Token",
+  "item.codingmod.problem_9_complete": "Level 9 Token",
+  "item.codingmod.problem_10_complete": "Level 10 Token",
+  "item.codingmod.problem_11_complete": "Level 11 Token",
+
+
   "block.codingmod.test_block": "Test Item Block",
   "block.codingmod.terminal": "Terminal",
 

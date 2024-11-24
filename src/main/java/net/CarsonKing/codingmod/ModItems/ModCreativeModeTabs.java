@@ -21,9 +21,23 @@ public class ModCreativeModeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.TESTITEM.get()))
                     .title(Component.translatable("creativetab.codingmod.testitem_items"))
                     .displayItems((itemDisplayParameters, output) -> {
+
+                        // add items to the test items creative mode tab
                         output.accept(ModItems.TESTITEM.get());
-                        // this adds my item to the test items creative mode tab
                         output.accept(ModItems.TESTITEMMASON.get());
+
+                        // all the reward items
+                        output.accept(ModItems.PROBLEM_1_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_2_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_3_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_4_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_5_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_6_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_7_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_8_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_9_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_10_COMPLETE.get());
+                        output.accept(ModItems.PROBLEM_11_COMPLETE.get());
                     }
                     ).build());
 

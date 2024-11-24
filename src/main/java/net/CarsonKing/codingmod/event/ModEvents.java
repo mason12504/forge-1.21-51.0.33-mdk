@@ -34,11 +34,17 @@ public class ModEvents {
                     100, 8, 0.02f));
         }
 
+        // coder trades
         if(event.getType() == ModVillagers.CODER_PROF.get()){
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
             trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 1),
                     new ItemStack(ModItems.TESTITEMMASON.get(), 1),
+                    100, 8, 0.02f));
+
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(ModItems.PROBLEM_1_COMPLETE.get(), 1),
+                    new ItemStack(Items.IRON_PICKAXE, 1),
                     100, 8, 0.02f));
 
         }
