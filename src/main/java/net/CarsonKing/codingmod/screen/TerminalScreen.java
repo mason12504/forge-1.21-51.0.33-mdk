@@ -176,7 +176,7 @@ public class TerminalScreen extends Screen {
                             "    double circumference = 3.14 * radius;\n" +
                             "    System.out.println(circumference);\n" +
                             "}",
-                    "15.7\n"
+                    "15.700000000000001\n"
             ),
             // Problem 3
             new CodingProblem(

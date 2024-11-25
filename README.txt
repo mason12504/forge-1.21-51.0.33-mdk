@@ -45,7 +45,8 @@ INSERT VILLAGE GENERATION CODE LOCATION
 All of our test cases, problems(with answers), and lesson plan are located in the GitHub in the folder Deliverables
 
 In Game:
-Hit the play button at the top of the Intelji screen to open Minecraft
+Open and launch Minecraft on the forge profile
+Once launched click on mods, then mods folder and drag our jar file into it
 Press Single Player
 Press Create new world (Make sure Game mode is set to creative and cheats are on)
 Once in game type the command (by pressing t to open the chat box) /locate structure minecraft:village_desert
