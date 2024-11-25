@@ -1,6 +1,7 @@
 package net.CarsonKing.codingmod.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.CarsonKing.codingmod.ModItems.ModItems;
 import net.CarsonKing.codingmod.widget.TextAreaWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -24,6 +25,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+// Import necessary classes for item handling
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 
 public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
@@ -63,6 +68,7 @@ public class TerminalScreen extends Screen {
         }
     }
 
+    // List of predefined test cases
     // List of predefined test cases
     private final List<TestCase> testCases = Arrays.asList(
             // Test 1: Successful Compilation and Execution
@@ -200,7 +206,7 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 5
             new CodingProblem(
-                    "5. Create an empty string ArrayList, and then print its size. Once you’ve done that, use `.add` to place “Steve” inside the ArrayList, and then print his name!",
+                    "5. Create an empty string ArrayList, and then print its size. Once you’ve done that, use .add to place “Steve” inside the ArrayList, and then print his name!",
                     "import java.util.ArrayList;\n" +
                             "public void playerMain() {\n" +
                             "    ArrayList<String> names = new ArrayList<>();\n" +
@@ -254,7 +260,7 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 9
             new CodingProblem(
-                    "9. Write a program that has the following: An integer variable, `a`, which has a value of 7. An `if` statement, which checks to see if `a < 5`. An `else if` statement, which checks to see if `a < 10`. An `else` statement, which checks to see if `a >= 10`.",
+                    "9. Write a program that has the following: An integer variable, a, which has a value of 7. An if statement, which checks to see if a < 5. An else if statement, which checks to see if a < 10. An else statement, which checks to see if a >= 10.",
                     "public void playerMain() {\n" +
                             "    int a = 7;\n" +
                             "    if(a < 5) {\n" +
@@ -312,6 +318,7 @@ public class TerminalScreen extends Screen {
             mc.player.getPersistentData().putInt("CurrentProblemIndex", currentProblemIndex);
         }
     }
+
     // Loads Progress for the problem the player is on
     private void loadProgress() {
         Minecraft mc = Minecraft.getInstance();
@@ -410,7 +417,6 @@ public class TerminalScreen extends Screen {
         displayCurrentProblem();
     }
 
-
     private void displayCurrentProblem() {
         if (currentProblemIndex >= codingProblems.size()) {
             displayOutput("🎉 Congratulations! You have completed all the coding problems.\n");
@@ -461,9 +467,11 @@ public class TerminalScreen extends Screen {
 
         if (isCorrect) {
             resultMessage.append("✅ Correct Output!\n");
-            // Award the player a diamond
-            awardDiamondToPlayer();
-            resultMessage.append("💎 You've been awarded a Diamond!\n\n");
+            // Award the player the specific item
+            awardItemToPlayer();
+            resultMessage.append("🎁 You've been awarded: ")
+                    .append(rewardItems[currentProblemIndex].getDescription().getString())
+                    .append("!\n\n");
             // Set the time to move to the next problem in 3 seconds
             nextProblemTime = System.currentTimeMillis() + 3000;
             // Do not immediately increment the problem index or display the next problem
@@ -479,14 +487,28 @@ public class TerminalScreen extends Screen {
         displayOutput(resultMessage.toString());
     }
 
+    // Import ModItems and define rewardItems array
+    private static final Item[] rewardItems = {
+            ModItems.PROBLEM_1_COMPLETE.get(),
+            ModItems.PROBLEM_2_COMPLETE.get(),
+            ModItems.PROBLEM_3_COMPLETE.get(),
+            ModItems.PROBLEM_4_COMPLETE.get(),
+            ModItems.PROBLEM_5_COMPLETE.get(),
+            ModItems.PROBLEM_6_COMPLETE.get(),
+            ModItems.PROBLEM_7_COMPLETE.get(),
+            ModItems.PROBLEM_8_COMPLETE.get(),
+            ModItems.PROBLEM_9_COMPLETE.get(),
+            ModItems.PROBLEM_10_COMPLETE.get(),
+            ModItems.PROBLEM_11_COMPLETE.get()
+    };
 
-    private void awardDiamondToPlayer() {
+    private void awardItemToPlayer() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.level != null) {
-            // Create a new diamond item stack
-            net.minecraft.world.item.ItemStack diamond = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 1);
-            // Add the diamond to the player's inventory
-            mc.player.getInventory().add(diamond);
+            if (currentProblemIndex < rewardItems.length) {
+                ItemStack rewardItem = new ItemStack(rewardItems[currentProblemIndex], 1);
+                mc.player.getInventory().add(rewardItem);
+            }
         }
     }
 
@@ -747,7 +769,6 @@ public class TerminalScreen extends Screen {
             // Vertical scrolling
             outputScrollOffset -= scrollY * font.lineHeight;
             outputScrollOffset = Math.max(0, Math.min(outputScrollOffset, getMaxOutputScroll()));
-
 
             return true;
         } else if (codeArea.isMouseOver(mouseX, mouseY)) {
