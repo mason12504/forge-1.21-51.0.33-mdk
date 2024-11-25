@@ -1,14 +1,24 @@
 package net.CarsonKing.codingmod.screen;
-
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.FriendlyByteBuf;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.CarsonKing.codingmod.ModItems.ModItems;
+import net.CarsonKing.codingmod.network.AwardItemC2SPacket;
+import net.CarsonKing.codingmod.network.ModMessages;
 import net.CarsonKing.codingmod.widget.TextAreaWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.commands.Commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 import net.minecraft.nbt.CompoundTag;
 import javax.tools.Diagnostic;
@@ -275,19 +285,16 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 10
             new CodingProblem(
-                    "10. Write a program containing your own exponential calculator function. Once you’ve created it, call your function and output the result of 2^10.",
+                    "10.  Write a program using for loops to iterate through the following array and print each value: \n" +
+                            "   String[] colors = {“red”, “green”, “blue”}\n" +
+                            " ",
                     "public void playerMain() {\n" +
-                            "    int result = exponent(2, 10);\n" +
-                            "    System.out.println(result);\n" +
-                            "}\n\n" +
-                            "public int exponent(int base, int power) {\n" +
-                            "    int result = 1;\n" +
-                            "    for(int i = 0; i < power; i++) {\n" +
-                            "        result *= base;\n" +
+                            "    String[] colors = {“red”, “green”, “blue”};\n" +
+                            "    for (int i = 0; i < colors.length; i++) { \n" +
+                            "         System.out.println(colors[i]); \n" +
                             "    }\n" +
-                            "    return result;\n" +
                             "}",
-                    "1024\n"
+                    "red\ngreen\nblue\n"
             ),
             // Problem 11
             new CodingProblem(
@@ -300,6 +307,22 @@ public class TerminalScreen extends Screen {
                             "    }\n" +
                             "}",
                     "5\n6\n7\n8\n9\n10\n"
+            ),
+            // Problem 12
+            new CodingProblem(
+                    "12. Write a program containing your own exponential calculator function. Once you’ve created it, call your function and output the result of 2^10.",
+                    "public void playerMain() {\n" +
+                            "    int result = exponent(2, 10);\n" +
+                            "    System.out.println(result);\n" +
+                            "}\n\n" +
+                            "public int exponent(int base, int power) {\n" +
+                            "    int result = 1;\n" +
+                            "    for(int i = 0; i < power; i++) {\n" +
+                            "        result *= base;\n" +
+                            "    }\n" +
+                            "    return result;\n" +
+                            "}",
+                    "1024\n"
             )
     );
 
@@ -487,7 +510,7 @@ public class TerminalScreen extends Screen {
         displayOutput(resultMessage.toString());
     }
 
-    // Import ModItems and define rewardItems array
+    // rewardItems array
     private static final Item[] rewardItems = {
             ModItems.PROBLEM_1_COMPLETE.get(),
             ModItems.PROBLEM_2_COMPLETE.get(),
@@ -499,16 +522,51 @@ public class TerminalScreen extends Screen {
             ModItems.PROBLEM_8_COMPLETE.get(),
             ModItems.PROBLEM_9_COMPLETE.get(),
             ModItems.PROBLEM_10_COMPLETE.get(),
-            ModItems.PROBLEM_11_COMPLETE.get()
+            Items.DIAMOND,
+            Items.NETHER_STAR
     };
 
     private void awardItemToPlayer() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && mc.level != null) {
-            if (currentProblemIndex < rewardItems.length) {
-                ItemStack rewardItem = new ItemStack(rewardItems[currentProblemIndex], 1);
-                mc.player.getInventory().add(rewardItem);
+        if (currentProblemIndex < rewardItems.length) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null) {
+                String itemID = getItemID(currentProblemIndex);
+                if (!itemID.isEmpty()) {
+                    String command = "give " + mc.player.getGameProfile().getName() + " " + itemID + " 1";
+                    mc.player.connection.sendCommand(command);
+                }
             }
+        }
+    }
+
+    private String getItemID(int index) {
+        switch (index) {
+            case 0:
+                return "codingmod:problem_1_complete";
+            case 1:
+                return "codingmod:problem_2_complete";
+            case 2:
+                return "codingmod:problem_3_complete";
+            case 3:
+                return "codingmod:problem_4_complete";
+            case 4:
+                return "codingmod:problem_5_complete";
+            case 5:
+                return "codingmod:problem_6_complete";
+            case 6:
+                return "codingmod:problem_7_complete";
+            case 7:
+                return "codingmod:problem_8_complete";
+            case 8:
+                return "codingmod:problem_9_complete";
+            case 9:
+                return "codingmod:problem_10_complete";
+            case 10:
+                return "minecraft:diamond";
+            case 11:
+                return "minecraft:nether_star";
+            default:
+                return "";
         }
     }
 

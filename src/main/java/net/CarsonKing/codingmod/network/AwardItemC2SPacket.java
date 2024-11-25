@@ -4,6 +4,7 @@ import net.CarsonKing.codingmod.ModItems.ModItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class AwardItemC2SPacket {
     private final int problemIndex;
@@ -52,7 +53,10 @@ public class AwardItemC2SPacket {
             case 9:
                 return new ItemStack(ModItems.PROBLEM_10_COMPLETE.get());
             case 10:
-                return new ItemStack(ModItems.PROBLEM_11_COMPLETE.get());
+                return new ItemStack(Items.DIAMOND);
+            case 11:
+                return new ItemStack(Items.NETHER_STAR);
+
             default:
                 return null;
         }

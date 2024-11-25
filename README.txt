@@ -72,6 +72,13 @@ Stop Flying: Double Press Space Bar
 Sprint: Control Or Double Click W
 Chat Box/Command Line: T
 
+Terminal
+Run: Runs the code
+Clear: Clears all current code
+TEST CASES: Runs Automated tests
+LEARNING MODE: Enables learning mode
+Click on the output screen and use the arrow keys to move left and right, scroll to go up and down
+
 ------------------------
 
 
