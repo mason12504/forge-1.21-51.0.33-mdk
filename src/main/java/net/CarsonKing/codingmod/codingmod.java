@@ -1,5 +1,5 @@
 package net.CarsonKing.codingmod;
-
+import net.CarsonKing.codingmod.network.ModMessages;
 import com.mojang.logging.LogUtils;
 import net.CarsonKing.codingmod.ModItems.ModCreativeModeTabs;
 import net.CarsonKing.codingmod.ModItems.ModItems;
@@ -39,6 +39,7 @@ public class codingmod
 
         // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
+        ModMessages.init();
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -60,7 +61,6 @@ public class codingmod
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-
     }
 
     // Add the example block item to the building blocks tab

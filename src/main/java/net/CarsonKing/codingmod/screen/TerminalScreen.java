@@ -1,13 +1,24 @@
 package net.CarsonKing.codingmod.screen;
-
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.FriendlyByteBuf;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.CarsonKing.codingmod.ModItems.ModItems;
+import net.CarsonKing.codingmod.network.AwardItemC2SPacket;
+import net.CarsonKing.codingmod.network.ModMessages;
 import net.CarsonKing.codingmod.widget.TextAreaWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.commands.Commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
 import org.lwjgl.glfw.GLFW;
 import net.minecraft.nbt.CompoundTag;
 import javax.tools.Diagnostic;
@@ -24,6 +35,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+// Import necessary classes for item handling
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 
 public class TerminalScreen extends Screen {
     private TextAreaWidget codeArea;
@@ -63,6 +78,7 @@ public class TerminalScreen extends Screen {
         }
     }
 
+    // List of predefined test cases
     // List of predefined test cases
     private final List<TestCase> testCases = Arrays.asList(
             // Test 1: Successful Compilation and Execution
@@ -176,7 +192,7 @@ public class TerminalScreen extends Screen {
                             "    double circumference = 3.14 * radius;\n" +
                             "    System.out.println(circumference);\n" +
                             "}",
-                    "15.7\n"
+                    "15.700000000000001\n"
             ),
             // Problem 3
             new CodingProblem(
@@ -200,7 +216,7 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 5
             new CodingProblem(
-                    "5. Create an empty string ArrayList, and then print its size. Once you’ve done that, use `.add` to place “Steve” inside the ArrayList, and then print his name!",
+                    "5. Create an empty string ArrayList, and then print its size. Once you’ve done that, use .add to place “Steve” inside the ArrayList, and then print his name!",
                     "import java.util.ArrayList;\n" +
                             "public void playerMain() {\n" +
                             "    ArrayList<String> names = new ArrayList<>();\n" +
@@ -254,7 +270,7 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 9
             new CodingProblem(
-                    "9. Write a program that has the following: An integer variable, `a`, which has a value of 7. An `if` statement, which checks to see if `a < 5`. An `else if` statement, which checks to see if `a < 10`. An `else` statement, which checks to see if `a >= 10`.",
+                    "9. Write a program that has the following: An integer variable, a, which has a value of 7. An if statement, which checks to see if a < 5. An else if statement, which checks to see if a < 10. An else statement, which checks to see if a >= 10.",
                     "public void playerMain() {\n" +
                             "    int a = 7;\n" +
                             "    if(a < 5) {\n" +
@@ -269,19 +285,16 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 10
             new CodingProblem(
-                    "10. Write a program containing your own exponential calculator function. Once you’ve created it, call your function and output the result of 2^10.",
+                    "10.  Write a program using for loops to iterate through the following array and print each value: \n" +
+                            "   String[] colors = {“red”, “green”, “blue”}\n" +
+                            " ",
                     "public void playerMain() {\n" +
-                            "    int result = exponent(2, 10);\n" +
-                            "    System.out.println(result);\n" +
-                            "}\n\n" +
-                            "public int exponent(int base, int power) {\n" +
-                            "    int result = 1;\n" +
-                            "    for(int i = 0; i < power; i++) {\n" +
-                            "        result *= base;\n" +
+                            "    String[] colors = {“red”, “green”, “blue”};\n" +
+                            "    for (int i = 0; i < colors.length; i++) { \n" +
+                            "         System.out.println(colors[i]); \n" +
                             "    }\n" +
-                            "    return result;\n" +
                             "}",
-                    "1024\n"
+                    "red\ngreen\nblue\n"
             ),
             // Problem 11
             new CodingProblem(
@@ -294,6 +307,22 @@ public class TerminalScreen extends Screen {
                             "    }\n" +
                             "}",
                     "5\n6\n7\n8\n9\n10\n"
+            ),
+            // Problem 12
+            new CodingProblem(
+                    "12. Write a program containing your own exponential calculator function. Once you’ve created it, call your function and output the result of 2^10.",
+                    "public void playerMain() {\n" +
+                            "    int result = exponent(2, 10);\n" +
+                            "    System.out.println(result);\n" +
+                            "}\n\n" +
+                            "public int exponent(int base, int power) {\n" +
+                            "    int result = 1;\n" +
+                            "    for(int i = 0; i < power; i++) {\n" +
+                            "        result *= base;\n" +
+                            "    }\n" +
+                            "    return result;\n" +
+                            "}",
+                    "1024\n"
             )
     );
 
@@ -312,6 +341,7 @@ public class TerminalScreen extends Screen {
             mc.player.getPersistentData().putInt("CurrentProblemIndex", currentProblemIndex);
         }
     }
+
     // Loads Progress for the problem the player is on
     private void loadProgress() {
         Minecraft mc = Minecraft.getInstance();
@@ -410,7 +440,6 @@ public class TerminalScreen extends Screen {
         displayCurrentProblem();
     }
 
-
     private void displayCurrentProblem() {
         if (currentProblemIndex >= codingProblems.size()) {
             displayOutput("🎉 Congratulations! You have completed all the coding problems.\n");
@@ -461,9 +490,11 @@ public class TerminalScreen extends Screen {
 
         if (isCorrect) {
             resultMessage.append("✅ Correct Output!\n");
-            // Award the player a diamond
-            awardDiamondToPlayer();
-            resultMessage.append("💎 You've been awarded a Diamond!\n\n");
+            // Award the player the specific item
+            awardItemToPlayer();
+            resultMessage.append("🎁 You've been awarded: ")
+                    .append(rewardItems[currentProblemIndex].getDescription().getString())
+                    .append("!\n\n");
             // Set the time to move to the next problem in 3 seconds
             nextProblemTime = System.currentTimeMillis() + 3000;
             // Do not immediately increment the problem index or display the next problem
@@ -479,14 +510,63 @@ public class TerminalScreen extends Screen {
         displayOutput(resultMessage.toString());
     }
 
+    // rewardItems array
+    private static final Item[] rewardItems = {
+            ModItems.PROBLEM_1_COMPLETE.get(),
+            ModItems.PROBLEM_2_COMPLETE.get(),
+            ModItems.PROBLEM_3_COMPLETE.get(),
+            ModItems.PROBLEM_4_COMPLETE.get(),
+            ModItems.PROBLEM_5_COMPLETE.get(),
+            ModItems.PROBLEM_6_COMPLETE.get(),
+            ModItems.PROBLEM_7_COMPLETE.get(),
+            ModItems.PROBLEM_8_COMPLETE.get(),
+            ModItems.PROBLEM_9_COMPLETE.get(),
+            ModItems.PROBLEM_10_COMPLETE.get(),
+            Items.DIAMOND,
+            Items.NETHER_STAR
+    };
 
-    private void awardDiamondToPlayer() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && mc.level != null) {
-            // Create a new diamond item stack
-            net.minecraft.world.item.ItemStack diamond = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 1);
-            // Add the diamond to the player's inventory
-            mc.player.getInventory().add(diamond);
+    private void awardItemToPlayer() {
+        if (currentProblemIndex < rewardItems.length) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.player != null) {
+                String itemID = getItemID(currentProblemIndex);
+                if (!itemID.isEmpty()) {
+                    String command = "give " + mc.player.getGameProfile().getName() + " " + itemID + " 1";
+                    mc.player.connection.sendCommand(command);
+                }
+            }
+        }
+    }
+
+    private String getItemID(int index) {
+        switch (index) {
+            case 0:
+                return "codingmod:problem_1_complete";
+            case 1:
+                return "codingmod:problem_2_complete";
+            case 2:
+                return "codingmod:problem_3_complete";
+            case 3:
+                return "codingmod:problem_4_complete";
+            case 4:
+                return "codingmod:problem_5_complete";
+            case 5:
+                return "codingmod:problem_6_complete";
+            case 6:
+                return "codingmod:problem_7_complete";
+            case 7:
+                return "codingmod:problem_8_complete";
+            case 8:
+                return "codingmod:problem_9_complete";
+            case 9:
+                return "codingmod:problem_10_complete";
+            case 10:
+                return "minecraft:diamond";
+            case 11:
+                return "minecraft:nether_star";
+            default:
+                return "";
         }
     }
 
@@ -747,7 +827,6 @@ public class TerminalScreen extends Screen {
             // Vertical scrolling
             outputScrollOffset -= scrollY * font.lineHeight;
             outputScrollOffset = Math.max(0, Math.min(outputScrollOffset, getMaxOutputScroll()));
-
 
             return true;
         } else if (codeArea.isMouseOver(mouseX, mouseY)) {
