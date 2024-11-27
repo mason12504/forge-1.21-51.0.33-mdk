@@ -186,7 +186,7 @@ public class TerminalScreen extends Screen {
             ),
             // Problem 2
             new CodingProblem(
-                    "2. Write a program that prints the circumference of a circle with radius 5. Reminder: Circumference = 3.14 * 5",
+                    "2. Write a program that prints the circumference of a circle with diameter 5. Reminder: Circumference = 3.14 * 5",
                     "public void playerMain() {\n" +
                             "    double radius = 5;\n" +
                             "    double circumference = 3.14 * radius;\n" +

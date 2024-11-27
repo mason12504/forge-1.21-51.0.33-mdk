@@ -66,7 +66,7 @@ To run our automated test cases press TEST CASES to run those
 To just run normal code start entering code without pressing TEST CASES or LEARNING MODE (Please see NOTES at the bottom before you begin coding)
 To run through the problems press LEARNING MODE
 Each problem completion will reward you with a custom item, and a advancement indicating your moving onto the next problem (if you leave the terminal at any point in learning mode it'll save the problem your currently on)
-Look for a villager who (INSERT VILLAGER DESCRIPTION HERE) interact with him and you can click on certain trades they offer for the items you gain.
+Look for a villager who has a white lab coat and a blue hat,  interact with him and you can click on certain trades they offer for the items you gain.
 There are only 11 problems, when that's done that's the majority of our mod, you can either mess around with the base terminal or just hit escape and quit game.
 
 
