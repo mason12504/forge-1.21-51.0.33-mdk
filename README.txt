@@ -1,6 +1,7 @@
 INSTALLATION GUIDE
 ------------------------
-Download Minecraft Java Edition here: https://www.minecraft.net/en-us/download
+Download Minecraft Java Edition 1.21 here: https://www.minecraft.net/en-us/download
+Note: The mod is only verified to run on 1.21, and may not work with 1.21.3 as it changes some things. 
 Login with your Microsoft account, if you have yet to purchase it do that
 Download forge Installer here 1.21-51.0.33 here: https://files.minecraftforge.net/net/minecraftforge/forge/index_1.21.html
 Download Java here: https://www.java.com/download/ie_manual.jsp
@@ -12,10 +13,10 @@ The Mod is now Installed!
 
 USERS
 ------------------------
-Once your in the game play as normal until you find a village
-When a village is found look for new structure, should have more glass then others and a terminal block on the inside
+Once you're in the game play as normal until you find a village
+When a village is found look for new structure, it should have more glass then others and a terminal block on the inside
 Open the chest in the house to find the lesson instructions, once you do that your 1st problem should unlock in the advancements tab 
-Open the terminal and click on learning mode to start solving problems (The problem your currently on will save if you leave the terminal screen)
+Open the terminal and click on learning mode to start solving problems (The problem you're currently on will save if you leave the terminal screen)
 Once you solve a problem you'll get a reward, find its corresponding villager to exchange your reward for in game items
 Repeat for all 11 problems!
 If you choose to you can also use the terminal as a normal java compiler if you don't choose TEST CASES or LEARNING MODE when opening the terminal
@@ -41,7 +42,14 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -Main -> Recources -> has all of our custom mod image data
 INSERT BOOK CODE LOCATION
 INSERT ADVACMENTS CODE LOCATION
-INSERT VILLAGE GENERATION CODE LOCATION
+
+Village generation code is handled with a datapack implementation, in Src->Main->resources->data->minecraft->structure->village, 
+the terminal_house_desert and terminal_house nbt files contain the village structure itself, 
+and the various json files in worldgen->template_pool->village are edited versions of the vanilla jsons to include the modded structure in standard village generation
+
+Villager trade code is in Src -> Main -> Java -> Net -> CarsonKing -> codingmod, 
+with event-> ModEvents creating the trade events, and villager -> ModVillagers and ModVillagerTrades creating the villager occupation and a new trade type for non-randomly enchanted tools. 
+
 All of our test cases, problems(with answers), and lesson plan are located in the GitHub in the folder Deliverables
 
 In Game:
