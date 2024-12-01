@@ -98,4 +98,7 @@ DEVS
 Note: Arrays and ArrayLists are the only imports beyond base java that are added, defining your own classes does not work,
 and the starting method must always be "public void playerMain() {" which replaces the standard main method,
 other then that sky is the limit. Also when leaving the terminal or resizing the terminal with code inside it will erase that code.
+
+Modding Tutorials by KaupenJoe were used for development 
+https://github.com/Tutorials-By-Kaupenjoe/Forge-Tutorial-1.21.X 
  
