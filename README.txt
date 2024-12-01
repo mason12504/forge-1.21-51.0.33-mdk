@@ -50,8 +50,7 @@ and the various json files in worldgen->template_pool->village are edited versio
 Villager trade code is in Src -> Main -> Java -> Net -> CarsonKing -> codingmod, 
 with event-> ModEvents creating the trade events, and villager -> ModVillagers and ModVillagerTrades creating the villager occupation and a new trade type for non-randomly enchanted tools. 
 
-All of our test cases, problems(with answers), and lesson plan are located in the GitHub in the folder Deliverables
-
+All of our test cases, problems(with answers), and lesson plan are located in the GitHub
 In Game:
 Open and launch Minecraft on the forge profile
 Once launched click on mods, then mods folder and drag our jar file into it
@@ -92,6 +91,46 @@ Click on the output screen and use the arrow keys to move left and right, scroll
 
 DEVS
 ------------------------
+INSTALLATION
+Minecraft Java Edition: https://www.minecraft.net/en-us/download
+Source Code:https://github.com/mason12504/forge-1.21-51.0.33-mdk
+Java Runtimes (Adoptium): https://adoptium.net/temurin/releases/?package=jdk&os=windows
+Java IDE (Intelji Community Edition): https://www.jetbrains.com/idea/download/?section=windows
+Forge Installer(Needs to be run once): https://files.minecraftforge.net/net/minecraftforge/forge/index_1.21.html
+Java: https://www.java.com/download/ie_manual.jsp
+
+
+Key Components:
+The terminal screen class controls the terminals ability to compile code, so any changes to code compilations should be done there, along with the automated testing and the learning mode
+If you wish to edit the text interaction aspect of the terminal go to the TextAreaWidget class
+All of our test cases, problems(with answers), and lesson plan are located in the GitHub if updates are needed for them
+
+Village generation code is handled with a datapack implementation, in Src->Main->resources->data->minecraft->structure->village, 
+the terminal_house_desert and terminal_house nbt files contain the village structure itself, 
+and the various json files in worldgen->template_pool->village are edited versions of the vanilla jsons to include the modded structure in standard village generation
+
+Villager trade code is in Src -> Main -> Java -> Net -> CarsonKing -> codingmod, 
+with event-> ModEvents creating the trade events, and villager -> ModVillagers and ModVillagerTrades creating the villager occupation and a new trade type for non-randomly enchanted tools. 
+
+
+CODE LOCATIONS
+Open Intelji and open the forge-1.21-51.0.33-mdk in Intelji to see all source code
+Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main source code
+-Block folder contains all code around custom blocks themselves
+-ModItems Folder contains the item form of all blocks/items (things you can hold in your inventory)
+-Screen -> TerminalScreen Holds the terminal Screen class which includes most of the code for the Terminal
+-Widget-> TextAreaWidget Holds all the code for everything text related
+-codingmod class holds all the main calls and registers for the mod
+-Main -> Recources -> has all of our custom mod image data
+INSERT BOOK CODE LOCATION
+INSERT ADVACMENTS CODE LOCATION
+
+
+
+
+
+
+
 
 
 
