@@ -98,7 +98,7 @@ INSTALLATION
 Minecraft Java Edition: https://www.minecraft.net/en-us/download
 Source Code:https://github.com/mason12504/forge-1.21-51.0.33-mdk
 Java Runtimes (Adoptium): https://adoptium.net/temurin/releases/?package=jdk&os=windows
-Java IDE (Intelji Community Edition): https://www.jetbrains.com/idea/download/?section=windows
+Java IDE (IntelliJ Community Edition): https://www.jetbrains.com/idea/download/?section=windows
 Forge Installer(Needs to be run once): https://files.minecraftforge.net/net/minecraftforge/forge/index_1.21.html
 Java: https://www.java.com/download/ie_manual.jsp
 
