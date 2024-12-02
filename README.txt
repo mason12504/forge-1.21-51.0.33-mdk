@@ -41,7 +41,8 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -Widget-> TextAreaWidget Holds all the code for everything text related
 -codingmod class holds all the main calls and registers for the mod
 -Main -> Recources -> has all of our custom mod image data
-INSERT BOOK CODE LOCATION
+-Main ->Recources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
+has the code for the generated coding structure, along with the instructional book.
 -Main -> Resources -> Data -> Advancements: has all advancemnts code data
 
 Village generation code is handled with a datapack implementation, in Src->Main->resources->data->minecraft->structure->village, 
@@ -52,6 +53,7 @@ Villager trade code is in Src -> Main -> Java -> Net -> CarsonKing -> codingmod,
 with event-> ModEvents creating the trade events, and villager -> ModVillagers and ModVillagerTrades creating the villager occupation and a new trade type for non-randomly enchanted tools. 
 
 All of our test cases, problems(with answers), and lesson plan are located in the GitHub
+
 In Game:
 Open and launch Minecraft on the forge profile
 Once launched click on mods, then mods folder and drag our jar file into it
@@ -123,7 +125,8 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -Widget-> TextAreaWidget Holds all the code for everything text related
 -codingmod class holds all the main calls and registers for the mod
 -Main -> Resources -> has all of our custom mod image data
-INSERT BOOK CODE LOCATION
+-Main ->Recources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
+has the code for the generated coding structure, along with the instructional book.
 -Main -> Resources -> Data -> Advancements: has all advancemnts code data
 
 
