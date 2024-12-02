@@ -5,7 +5,7 @@ import net.CarsonKing.codingmod.ModItems.ModCreativeModeTabs;
 import net.CarsonKing.codingmod.ModItems.ModItems;
 import net.CarsonKing.codingmod.block.ModBlocks;
 import net.CarsonKing.codingmod.villager.ModVillagers;
-import net.CarsonKing.codingmod.villager.ModVillagerTrades; // I believe this is necessesary as it has the enchanted item trade code, but maybe not.
+import net.CarsonKing.codingmod.villager.ModVillagerTrades;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
