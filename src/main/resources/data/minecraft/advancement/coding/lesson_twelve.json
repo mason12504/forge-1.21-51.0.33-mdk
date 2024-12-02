@@ -10,7 +10,7 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "minecraft:coding/lesson_11",
+  "parent": "minecraft:coding/lesson_eleven",
   "criteria": {
     "requirement": {
       "trigger": "minecraft:inventory_changed",
