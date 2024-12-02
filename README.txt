@@ -15,7 +15,7 @@ The Mod is now Installed!
 USERS
 ------------------------
 Once you're in the game play as normal until you find a village
-When a village is found look for new structure, it should have more glass then others and a terminal block on the inside
+When a village is found look for new structure, it should have more glass than others and a terminal block on the inside
 Open the chest in the house to find the lesson instructions, once you do that your 1st problem should unlock in the advancements tab 
 Open the terminal and click on learning mode to start solving problems (The problem you're currently on will save if you leave the terminal screen)
 Once you solve a problem you'll get a reward, find its corresponding villager to exchange your reward for in game items
@@ -28,22 +28,22 @@ Grader Specific Installation:
 Minecraft Java Edition (Will provide one of our logins in separate email if game is not owned) : https://www.minecraft.net/en-us/download
 Source Code:https://github.com/mason12504/forge-1.21-51.0.33-mdk
 Java Runtimes (Adoptium): https://adoptium.net/temurin/releases/?package=jdk&os=windows
-Java IDE (Intelji Community Edition): https://www.jetbrains.com/idea/download/?section=windows
+Java IDE (IntelliJ Community Edition): https://www.jetbrains.com/idea/download/?section=windows
 Forge Installer(Needs to be run once): https://files.minecraftforge.net/net/minecraftforge/forge/index_1.21.html
 Java: https://www.java.com/download/ie_manual.jsp
 
 Out of Game:
-Open Intelji and open the forge-1.21-51.0.33-mdk in Intelji to see all source code
+Open IntelliJ and open the forge-1.21-51.0.33-mdk in IntelliJ to see all source code
 Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main source code
 -Block folder contains all code around custom blocks themselves
 -ModItems Folder contains the item form of all blocks/items (things you can hold in your inventory)
 -Screen -> TerminalScreen Holds the terminal Screen class which includes most of the code for the Terminal
 -Widget-> TextAreaWidget Holds all the code for everything text related
 -codingmod class holds all the main calls and registers for the mod
--Main -> Recources -> has all of our custom mod image data
--Main ->Recources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
+-Main -> Resources -> has all of our custom mod image data
+-Main ->Resources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
 has the code for the generated coding structure, along with the instructional book.
--Main -> Resources -> Data -> Advancements: has all advancemnts code data
+-Main -> Resources -> Data -> Advancements: has all advancements code data
 
 Village generation code is handled with a datapack implementation, in Src->Main->resources->data->minecraft->structure->village, 
 the terminal_house_desert and terminal_house nbt files contain the village structure itself, 
@@ -117,7 +117,7 @@ with event-> ModEvents creating the trade events, and villager -> ModVillagers a
 
 
 CODE LOCATIONS
-Open Intelji and open the forge-1.21-51.0.33-mdk in Intelji to see all source code
+Open IntelliJ and open the forge-1.21-51.0.33-mdk in IntelliJ to see all source code
 Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main source code
 -Block folder contains all code around custom blocks themselves
 -ModItems Folder contains the item form of all blocks/items (things you can hold in your inventory)
@@ -125,9 +125,9 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -Widget-> TextAreaWidget Holds all the code for everything text related
 -codingmod class holds all the main calls and registers for the mod
 -Main -> Resources -> has all of our custom mod image data
--Main ->Recources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
+-Main ->Resources -> Data -> Minecraft -> Structure -> codingmod -> houses -> terminal_houses_desert:
 has the code for the generated coding structure, along with the instructional book.
--Main -> Resources -> Data -> Advancements: has all advancemnts code data
+-Main -> Resources -> Data -> Advancements: has all advancements code data
 
 
 
