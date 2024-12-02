@@ -105,6 +105,7 @@ public class TextAreaWidget extends AbstractWidget {
         disableScissor();
     }
 
+    // Type only if terminal is focused
     @Override
     public boolean charTyped(char chr, int modifiers) {
         if (!isFocused) {
@@ -114,6 +115,7 @@ public class TextAreaWidget extends AbstractWidget {
         return true;
     }
 
+    // Terminal navigation keys
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (!isFocused) {
@@ -211,12 +213,14 @@ public class TextAreaWidget extends AbstractWidget {
         ensureCursorVisible(0);
     }
 
+    // Move cursor between lines
     private void moveCursorLine(int lineOffset) {
         int[] lineOffsets = getLineOffsets();
         int currentLine = getCursorLine();
         int column = getCursorColumn();
         int targetLine = currentLine + lineOffset;
 
+        // determine line start and end
         if (targetLine >= 0 && targetLine < lineOffsets.length - 1) {
             int lineStart = lineOffsets[targetLine];
             int lineEnd = lineOffsets[targetLine + 1] - 1; // Exclude newline character
@@ -244,6 +248,7 @@ public class TextAreaWidget extends AbstractWidget {
         ensureCursorVisible(0);
     }
 
+    // Scroll the terminal with the cursor
     private void ensureCursorVisible(int cursorVisibleWidth) {
         int lineHeight = font.lineHeight;
         int cursorLine = getCursorLine();
@@ -328,6 +333,7 @@ public class TextAreaWidget extends AbstractWidget {
         return offsets;
     }
 
+    // Focus on terminal
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
@@ -340,6 +346,7 @@ public class TextAreaWidget extends AbstractWidget {
         }
     }
 
+    // Determine where to place the cursor based on where was clicked
     private void calculateCursorFromMouse(double mouseX, double mouseY) {
         String[] lines = text.split("\n", -1);
         int lineHeight = font.lineHeight;
@@ -379,6 +386,7 @@ public class TextAreaWidget extends AbstractWidget {
         return index;
     }
 
+    // Check if mouse is currently over the terminal.
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseX < getX() + width &&

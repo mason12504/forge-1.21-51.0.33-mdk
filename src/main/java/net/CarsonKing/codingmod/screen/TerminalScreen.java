@@ -525,7 +525,7 @@ public class TerminalScreen extends Screen {
             Items.DIAMOND,
             Items.NETHER_STAR
     };
-
+    // Awards item to the player based on the current problem solved
     private void awardItemToPlayer() {
         if (currentProblemIndex < rewardItems.length) {
             Minecraft mc = Minecraft.getInstance();
@@ -538,7 +538,7 @@ public class TerminalScreen extends Screen {
             }
         }
     }
-
+// Returns item ID based on the current problem solved
     private String getItemID(int index) {
         switch (index) {
             case 0:
@@ -569,7 +569,7 @@ public class TerminalScreen extends Screen {
                 return "";
         }
     }
-
+// Test cases for terminal functionality
     private void runTests() {
         testExecutor.submit(() -> {
             StringBuilder testResults = new StringBuilder("🔍 Running Tests...\n\n");
@@ -701,6 +701,7 @@ public class TerminalScreen extends Screen {
         boolean success = task.call();
         fileManager.close();
 
+        // Output error message if compilation fails
         if (!success) {
             StringBuilder errorMessage = new StringBuilder("⚠️ Compilation failed:\n");
             for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
@@ -755,6 +756,7 @@ public class TerminalScreen extends Screen {
         }
     }
 
+    // Create GUI for terminal
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
