@@ -42,7 +42,7 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -codingmod class holds all the main calls and registers for the mod
 -Main -> Recources -> has all of our custom mod image data
 INSERT BOOK CODE LOCATION
-INSERT ADVACMENTS CODE LOCATION
+-Main -> Resources -> Data -> Advancements: has all advancemnts code data
 
 Village generation code is handled with a datapack implementation, in Src->Main->resources->data->minecraft->structure->village, 
 the terminal_house_desert and terminal_house nbt files contain the village structure itself, 
@@ -122,9 +122,9 @@ Go to Src -> Main -> Java -> Net -> CarsonKing -> codingmod to see all main sour
 -Screen -> TerminalScreen Holds the terminal Screen class which includes most of the code for the Terminal
 -Widget-> TextAreaWidget Holds all the code for everything text related
 -codingmod class holds all the main calls and registers for the mod
--Main -> Recources -> has all of our custom mod image data
+-Main -> Resources -> has all of our custom mod image data
 INSERT BOOK CODE LOCATION
-INSERT ADVACMENTS CODE LOCATION
+-Main -> Resources -> Data -> Advancements: has all advancemnts code data
 
 
 
