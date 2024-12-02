@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_10_complete"
     },
     "title": "Lesson Ten",
-    "description": "Write a program that has an integer variable equal to 7. Then check using an if statement if 7 < 5, an else if statement to check if 7 < 10, and an else statement to check if 7 >= 10.",
+    "description": "Write a program that utilizes an existing list of colors and iterates through it using a for loop.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,15 @@
   "parent": "minecraft:coding/lesson_nine",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_10_complete"
+          }
+        ]
+      }
     }
   }
+}
 }

@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_5_complete"
     },
     "title": "Lesson Five",
-    "description": "Create an empty string array list and print its length. Use the .add functionality to put 'Steve' at index 0.",
+    "description": "Create an empty string array list and print its length. Use the .add functionality to put \"Steve\" at index 0.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,14 @@
   "parent": "minecraft:coding/lesson_four",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_5_complete"
+          }
+        ]
+      }
     }
   }
 }

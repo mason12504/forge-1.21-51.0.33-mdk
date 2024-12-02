@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_4_complete"
     },
     "title": "Lesson Four",
-    "description": "Create an Array that holds the string 'My first array', then print the array at index 0.",
+    "description": "Create an Array that holds the string \"My first array\", then print the array at index 0.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,14 @@
   "parent": "minecraft:coding/lesson_three",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_4_complete"
+          }
+        ]
+      }
     }
   }
 }

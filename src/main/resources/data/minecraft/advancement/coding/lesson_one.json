@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_1_complete"
     },
     "title": "Lesson One",
-    "description": "Write a program which prints \"Hello World\".",
+    "description": "Write a program which prints \"Hello World\" and output it to the terminal.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,14 @@
   "parent": "minecraft:coding/root",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_1_complete"
+          }
+        ]
+      }
     }
   }
 }

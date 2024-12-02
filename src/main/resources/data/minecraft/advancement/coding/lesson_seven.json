@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_7_complete"
     },
     "title": "Lesson Seven",
-    "description": "Write a program which can perform addition, subtraction, multiplication, and division.",
+    "description": "Write a program that generates one false statement and one true statement and print the results.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,15 @@
   "parent": "minecraft:coding/lesson_six",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_7_complete"
+          }
+        ]
+      }
     }
   }
+}
 }

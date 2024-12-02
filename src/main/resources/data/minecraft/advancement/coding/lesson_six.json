@@ -1,10 +1,10 @@
 {
   "display": {
     "icon": {
-      "id": "minecraft:book"
+      "id": "codingmod:problem_6_complete"
     },
     "title": "Lesson Six",
-    "description": "Write a program which accepts three user inputs for integers. The inputs must add up to 15.",
+    "description": "Write a program that performs a variety of calculations\nspecified by the prompt.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
@@ -13,7 +13,14 @@
   "parent": "minecraft:coding/lesson_five",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_6_complete"
+          }
+        ]
+      }
     }
   }
 }
