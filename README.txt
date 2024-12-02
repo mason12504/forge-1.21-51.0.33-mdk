@@ -1,5 +1,6 @@
 INSTALLATION GUIDE
 ------------------------
+A video walkthrough is also available in the files (User install walkthrough pt1.mp4), but here is the step by step installation: 
 Download Minecraft Java Edition 1.21 here: https://www.minecraft.net/en-us/download
 Note: The mod is only verified to run on 1.21, and may not work with 1.21.3 as it changes some things. 
 Login with your Microsoft account, if you have yet to purchase it do that
