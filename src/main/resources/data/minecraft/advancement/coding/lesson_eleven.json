@@ -10,10 +10,17 @@
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "minecraft:coding/lesson_ten",
+  "parent": "minecraft:coding/lesson_10",
   "criteria": {
     "requirement": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond"
+          }
+        ]
+      }
     }
   }
 }
