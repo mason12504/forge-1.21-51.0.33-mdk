@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// Contains all ten of the villager trades for reward items.
 @Mod.EventBusSubscriber(modid=codingmod.MOD_ID)
 public class ModEvents {
 

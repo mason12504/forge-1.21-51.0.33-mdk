@@ -16,14 +16,14 @@
   "item.codingmod.problem_11_complete": "Level 11 Token",
 
 
-  "block.codingmod.test_block": "Test Item Block",
+  "block.codingmod.test_block": "Programmer's Block",
   "block.codingmod.terminal": "Terminal",
 
   "screen.codingmod.terminal": "Terminal",
   "button.codingmod.run": "Run",
   "button.codingmod.clear": "Clear",
 
-  "creativetab.codingmod.testitem_items": "Test Items",
+  "creativetab.codingmod.testitem_items": "Learn to Code",
   "creativetab.codingmod.test_blocks": "Test Blocks",
   "entity.minecraft.villager.codingmod.coder": "Coder"
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
-//Creates a custim creative mode tab
+//Creates a custom creative mode tab
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab>CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, codingmod.MOD_ID);
@@ -18,13 +18,13 @@ public class ModCreativeModeTabs {
 
     //Creates the creative mode tabs for items
     public static final RegistryObject<CreativeModeTab> TEST_ITEMS_TAB = CREATIVE_MODE_TABS.register("test_items_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.TESTITEM.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.TERMINAL.get()))
                     .title(Component.translatable("creativetab.codingmod.testitem_items"))
+                    // Add the following items into the creative tab.
                     .displayItems((itemDisplayParameters, output) -> {
-
-                        // add items to the test items creative mode tab
-                        output.accept(ModItems.TESTITEM.get());
-                        output.accept(ModItems.TESTITEMMASON.get());
+                        // blocks
+                        output.accept(ModBlocks.TERMINAL.get());
+                        output.accept(ModBlocks.TEST_BLOCK.get());
 
                         // all the reward items
                         output.accept(ModItems.PROBLEM_1_COMPLETE.get());
@@ -41,16 +41,6 @@ public class ModCreativeModeTabs {
                     }
                     ).build());
 
-    //Creates the cretative mode tab for blocks
-    public static final RegistryObject<CreativeModeTab> TEST_BLOCKS_TAB = CREATIVE_MODE_TABS.register("test_blocks_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.TEST_BLOCK.get()))
-                    .withTabsBefore(TEST_ITEMS_TAB.getId())
-                    .title(Component.translatable("creativetab.codingmod.test_blocks"))
-                    .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(ModBlocks.TEST_BLOCK.get());
-                        output.accept(ModBlocks.TERMINAL.get());
-                    }
-                    ).build());
 
 
     //Adds the creative mode tab to the register bus

@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.concurrent.CompletableFuture;
 
+// Programmatically creates the assets and data of the mod, tying together our resources with the code.
 @Mod.EventBusSubscriber(modid = codingmod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
     @SubscribeEvent

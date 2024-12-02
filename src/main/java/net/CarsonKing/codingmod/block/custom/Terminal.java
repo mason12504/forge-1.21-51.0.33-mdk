@@ -30,7 +30,7 @@ public class Terminal extends Block {
 
             return InteractionResult.SUCCESS;
         } else {
-            //Server-side logig
+            //Server-side logging
             return InteractionResult.CONSUME;
         }
     }

@@ -15,13 +15,16 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
+// Registry for all blocks present in the mod.
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, codingmod.MOD_ID);
 
+    // Only used in village structure
     public static final RegistryObject<Block> TEST_BLOCK = registerBlock("test_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.AMETHYST)));
+
     public static final RegistryObject<Block> TERMINAL = registerBlock("terminal",
             () -> new Terminal(BlockBehaviour.Properties.of().strength(2f).requiresCorrectToolForDrops()));
 

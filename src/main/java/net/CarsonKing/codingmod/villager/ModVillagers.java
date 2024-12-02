@@ -13,6 +13,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+// Adds our custom villager profession
 public class ModVillagers {
     public static final DeferredRegister<PoiType> POI_TYPES =
             DeferredRegister.create(ForgeRegistries.POI_TYPES, codingmod.MOD_ID);
