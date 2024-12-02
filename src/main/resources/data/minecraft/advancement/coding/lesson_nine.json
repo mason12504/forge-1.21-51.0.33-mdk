@@ -1,0 +1,27 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_9_complete"
+    },
+    "title": "Lesson Nine",
+    "description": "Write a program that has an integer variable equal to 7. Then check using an if statement if 7 < 5 and print \"7 is less than 10.\" if true.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_eight",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_9_complete"
+          }
+        ]
+      }
+    }
+  }
+}
+}

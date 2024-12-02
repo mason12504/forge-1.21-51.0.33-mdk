@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_6_complete"
+    },
+    "title": "Lesson Six",
+    "description": "Write a program that performs a variety of calculations\nspecified by the prompt.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_five",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_6_complete"
+          }
+        ]
+      }
+    }
+  }
+}

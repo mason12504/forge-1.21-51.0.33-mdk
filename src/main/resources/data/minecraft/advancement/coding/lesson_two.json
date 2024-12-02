@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_2_complete"
+    },
+    "title": "Lesson Two",
+    "description": "Write a program which outputs the area of a circle with a diameter of 5.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_one",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_2_complete"
+          }
+        ]
+      }
+    }
+  }
+}

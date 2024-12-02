@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_3_complete"
+    },
+    "title": "Lesson Three",
+    "description": "Create an integer variable with a value of 5. Print that variable, and then increment the variable by 1 and print it again.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_two",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_3_complete"
+          }
+        ]
+      }
+    }
+  }
+}

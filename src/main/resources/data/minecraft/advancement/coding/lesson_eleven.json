@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_11_complete"
+    },
+    "title": "Lesson Eleven",
+    "description": "Write a program that utilizes a while loop to increment an integer from 5 to 10, printing each time it does so. Once the number reaches 10, a boolean should be set to true and exit the loop.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_ten",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

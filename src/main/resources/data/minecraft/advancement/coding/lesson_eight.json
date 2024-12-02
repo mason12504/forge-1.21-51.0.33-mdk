@@ -1,0 +1,27 @@
+{
+  "display": {
+    "icon": {
+      "id": "codingmod:problem_8_complete"
+    },
+    "title": "Lesson Eight",
+    "description": "Write a program with three integers 2, 5, and 5. Compare these integers to see if they are equal to each other and print true or false depending on if they are.",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:coding/lesson_seven",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "codingmod:problem_8_complete"
+          }
+        ]
+      }
+    }
+  }
+}
+}
