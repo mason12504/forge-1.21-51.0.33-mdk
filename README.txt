@@ -1,6 +1,6 @@
 INSTALLATION GUIDE
 ------------------------
-A video walkthrough is also available in the files (User install walkthrough pt1.mp4), but here are the steps if you already have the basic idea of minecraft mods down:
+A video walkthrough is also available in the files (User install walkthrough pt1.mp4), but here are the steps if you prefer a more concise format:
 Download Minecraft Java Edition 1.21 here: https://www.minecraft.net/en-us/download
 Note: The mod is only verified to run on 1.21, and may not work with 1.21.3 as it changes some things. 
 Login with your Microsoft account, if you have yet to purchase it do that
@@ -21,6 +21,7 @@ Open the terminal and click on learning mode to start solving problems (The prob
 Once you solve a problem you'll get a reward, find its corresponding villager to exchange your reward for in game items
 Repeat for all 11 problems!
 If you choose to you can also use the terminal as a normal java compiler if you don't choose TEST CASES or LEARNING MODE when opening the terminal
+(Video walkthrough part 2 covers these user steps as well) 
 
 GRADERS
 ------------------------
